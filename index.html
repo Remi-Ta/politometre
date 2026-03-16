@@ -661,14 +661,14 @@ function renderSidebar(){
   list.innerHTML='';
   // Tri alpha + filtre recherche
   const sbSearch=(document.getElementById('sbSearch')?.value||'').toLowerCase();
-  const sorted=[...state.communes.map((c,i)=>({c,i}))].sort((a,b)=>a.c.nom.localeCompare(b.c.nom,'fr'));
-  const filtered=sbSearch?sorted.filter(({c})=>c.nom.toLowerCase().includes(sbSearch)||c.insee?.includes(sbSearch)):sorted;
-  filtered.forEach(({c,ci})=>{
+  const sorted=[...state.communes.map((comm,i)=>({comm,i}))].sort((a,b)=>a.comm.nom.localeCompare(b.comm.nom,'fr'));
+  const filtered=sbSearch?sorted.filter(({comm})=>comm.nom.toLowerCase().includes(sbSearch)||(comm.insee&&comm.insee.includes(sbSearch))):sorted;
+  filtered.forEach(({comm,i})=>{
     const li=document.createElement('li');
-    li.className='commune-item'+(state.selectedCommune===ci?' active':'');
+    li.className='commune-item'+(state.selectedCommune===i?' active':'');
     li.innerHTML=`
-      <span onclick="selectCommune(${ci})" style="flex:1;cursor:pointer">${c.nom}</span>
-      <span class="badge">${getFilledCount(c.scrutins)}</span>`;
+      <span onclick="selectCommune(${i})" style="flex:1;cursor:pointer">${comm.nom}</span>
+      <span class="badge">${getFilledCount(comm.scrutins)}</span>`;
     list.appendChild(li);
   });
   const bs=document.getElementById('bureauxSection');
@@ -690,13 +690,14 @@ function renderSidebar(){
   }else bs.style.display='none';
 }
 function selectCommune(ci){
-  state.selectedCommune=ci;state.selectedBureau=null;save();renderSidebar();
+  state.selectedCommune=ci;state.selectedBureau=null;save();renderSidebar();renderMain();
   const mc=document.getElementById('mainContent');
-  if(mc){mc.style.opacity='0';mc.style.transform='translateX(8px)';}
-  renderMain();
   if(mc){
-    mc.style.transition='opacity .25s ease, transform .25s ease';
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{mc.style.opacity='1';mc.style.transform='translateX(0)';}));
+    mc.style.transition='none';mc.style.opacity='0';mc.style.transform='translateX(6px)';
+    requestAnimationFrame(()=>{
+      mc.style.transition='opacity .2s ease, transform .2s ease';
+      mc.style.opacity='1';mc.style.transform='translateX(0)';
+    });
   }
 }
 function selectBureau(bi){state.selectedBureau=bi;save();renderSidebar();renderMain();}
@@ -770,18 +771,18 @@ function switchTab(tab,btn){
   activeTab=tab;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
+  if(tab==='tableau')renderTabTableau();
+  else if(tab==='participation')renderTabParticipation();
+  else if(tab==='indices')renderTabIndices();
+  else renderTabElus();
   const tc=document.getElementById('tabContent');
-  if(tc){tc.style.opacity='0';tc.style.transform='translateY(6px)';}
-  requestAnimationFrame(()=>{
-    if(tab==='tableau')renderTabTableau();
-    else if(tab==='participation')renderTabParticipation();
-    else if(tab==='indices')renderTabIndices();
-    else renderTabElus();
-    if(tc){
-      tc.style.transition='opacity .22s ease, transform .22s ease';
-      requestAnimationFrame(()=>{tc.style.opacity='1';tc.style.transform='translateY(0)';});
-    }
-  });
+  if(tc){
+    tc.style.transition='none';tc.style.opacity='0';tc.style.transform='translateY(8px)';
+    requestAnimationFrame(()=>{
+      tc.style.transition='opacity .2s ease, transform .2s ease';
+      tc.style.opacity='1';tc.style.transform='translateY(0)';
+    });
+  }
 }
 
 // ═══════════════════════════════════════════════════════
