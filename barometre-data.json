@@ -1,0 +1,2083 @@
+{
+  "communes": [
+    {
+      "nom": "Niort",
+      "insee": "79191",
+      "dept": "79 - Deux-Sèvres",
+      "population": "60074",
+      "bureaux": [],
+      "scrutins": [
+        {
+          "type": "MUN",
+          "annee": 2008,
+          "tour": "1",
+          "inscrits": 39306,
+          "votants": 23464,
+          "blancs": 1058,
+          "nuls": 0,
+          "exprimes": 22406,
+          "listes": [
+            {
+              "candidat": "Geneviève GAILLARD",
+              "parti": "",
+              "etiquette": "SOC",
+              "voix": 10090,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Alain BAUDIN",
+              "parti": "",
+              "etiquette": "DVG",
+              "voix": 5844,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Marc THEBAULT",
+              "parti": "",
+              "etiquette": "LR",
+              "voix": 4575,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Joël RENOUX",
+              "parti": "",
+              "etiquette": "DVG",
+              "voix": 1293
+            },
+            {
+              "candidat": "Marinette VEYSSIERE",
+              "parti": "",
+              "etiquette": "EXG",
+              "voix": 604
+            }
+          ]
+        },
+        {
+          "type": "MUN",
+          "annee": 2008,
+          "tour": "2",
+          "inscrits": 39227,
+          "votants": 22343,
+          "blancs": 533,
+          "nuls": 0,
+          "exprimes": 21810,
+          "listes": [
+            {
+              "candidat": "Geneviève GAILLARD",
+              "parti": "",
+              "etiquette": "SOC",
+              "voix": 11103,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Alain BAUDIN",
+              "parti": "",
+              "etiquette": "DVG",
+              "voix": 5950,
+              "statut": "present"
+            },
+            {
+              "candidat": "Marc THEBAULT",
+              "parti": "",
+              "etiquette": "LR",
+              "voix": 4757,
+              "statut": "present"
+            }
+          ]
+        },
+        {
+          "type": "MUN",
+          "annee": 2014,
+          "tour": "U",
+          "inscrits": 39288,
+          "votants": 23302,
+          "blancs": 650,
+          "nuls": 0,
+          "exprimes": 22652,
+          "listes": [
+            {
+              "candidat": "Jean-Romée CHARBONNEAU",
+              "parti": "",
+              "etiquette": "RN",
+              "voix": 1676
+            },
+            {
+              "candidat": "Jérôme BALOGE",
+              "parti": "",
+              "etiquette": "DVC",
+              "voix": 12304,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Amaury BREUILLE",
+              "parti": "",
+              "etiquette": "ECO",
+              "voix": 1725
+            },
+            {
+              "candidat": "Nathalie SEGUIN",
+              "parti": "",
+              "etiquette": "EXG",
+              "voix": 2337
+            },
+            {
+              "candidat": "Geneviève GAILLARD",
+              "parti": "",
+              "etiquette": "SOC",
+              "voix": 4610
+            }
+          ]
+        },
+        {
+          "type": "MUN",
+          "annee": 2020,
+          "tour": "U",
+          "inscrits": 38620,
+          "votants": 15959,
+          "blancs": 89,
+          "nuls": 207,
+          "exprimes": 15663,
+          "listes": [
+            {
+              "candidat": "Jérôme BALOGE",
+              "parti": "",
+              "etiquette": "DVC",
+              "voix": 10649,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Jérémy ROBINEAU",
+              "parti": "",
+              "etiquette": "DVG",
+              "voix": 1502
+            },
+            {
+              "candidat": "François GIBERT",
+              "parti": "",
+              "etiquette": "DVG",
+              "voix": 2934
+            },
+            {
+              "candidat": "Jean Romée CHARBONNEAU",
+              "parti": "",
+              "etiquette": "RN",
+              "voix": 578
+            }
+          ]
+        },
+        {
+          "type": "MUN",
+          "annee": 2026,
+          "tour": "U",
+          "inscrits": 40044,
+          "votants": 22221,
+          "blancs": 212,
+          "nuls": 164,
+          "exprimes": 21845,
+          "listes": [
+            {
+              "candidat": "Jérôme BALOGE",
+              "parti": "",
+              "etiquette": "DVC",
+              "voix": 14216,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Sébastien MATHIEU",
+              "parti": "",
+              "etiquette": "UG",
+              "voix": 5645,
+              "statut": "present"
+            },
+            {
+              "candidat": "Céline BONNET-DERISBOURG",
+              "parti": "",
+              "etiquette": "RN",
+              "voix": 1984,
+              "statut": "present"
+            }
+          ]
+        },
+        {
+          "type": "LEG",
+          "annee": 2017,
+          "tour": "1",
+          "inscrits": 39929,
+          "votants": 19755,
+          "blancs": 214,
+          "nuls": 110,
+          "exprimes": 19431,
+          "listes": [
+            {
+              "candidat": "Guillaume CHICHE",
+              "parti": "",
+              "etiquette": "REN",
+              "voix": 7722,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Nathalie SEGUIN",
+              "parti": "",
+              "etiquette": "FI",
+              "voix": 3365,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Marc THEBAULT",
+              "parti": "",
+              "etiquette": "UDI",
+              "voix": 2668
+            },
+            {
+              "candidat": "Elodie TRUONG",
+              "parti": "",
+              "etiquette": "SOC",
+              "voix": 2029
+            },
+            {
+              "candidat": "Alain PIVETEAU",
+              "parti": "",
+              "etiquette": "DVG",
+              "voix": 1183
+            },
+            {
+              "candidat": "Martine GENDRY",
+              "parti": "",
+              "etiquette": "RN",
+              "voix": 1072
+            },
+            {
+              "candidat": "Coralie DESNOUES",
+              "parti": "",
+              "etiquette": "DVD",
+              "voix": 612
+            },
+            {
+              "candidat": "Cédric CHARLIER",
+              "parti": "DLF",
+              "etiquette": "ExD",
+              "voix": 232
+            },
+            {
+              "candidat": "Cyril GIRAUD",
+              "parti": "",
+              "etiquette": "ExD",
+              "voix": 168
+            },
+            {
+              "candidat": "Maryse VALLEE",
+              "parti": "",
+              "etiquette": "EXG",
+              "voix": 150
+            },
+            {
+              "candidat": "Joseph ABI NADER",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 127
+            },
+            {
+              "candidat": "Tristan PELISSIER",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 103
+            }
+          ]
+        },
+        {
+          "type": "LEG",
+          "annee": 2022,
+          "tour": "1",
+          "inscrits": 39550,
+          "votants": 19778,
+          "blancs": 209,
+          "nuls": 105,
+          "exprimes": 19464,
+          "listes": [
+            {
+              "candidat": "François CHARRON",
+              "parti": "LFI-NUPES",
+              "etiquette": "UG",
+              "voix": 6416,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Bastien MARCHIVE",
+              "parti": "",
+              "etiquette": "UC",
+              "voix": 6336,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Guillaume CHICHE",
+              "parti": "",
+              "etiquette": "ECO",
+              "voix": 2901
+            },
+            {
+              "candidat": "Dorothée CHAMPEAU",
+              "parti": "",
+              "etiquette": "RN",
+              "voix": 1746
+            },
+            {
+              "candidat": "Catherine GANIVET",
+              "parti": "",
+              "etiquette": "UDI",
+              "voix": 723
+            },
+            {
+              "candidat": "Geneviève MASSON",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 701
+            },
+            {
+              "candidat": "Matylde BERTHENOUX",
+              "parti": "",
+              "etiquette": "REC",
+              "voix": 626
+            },
+            {
+              "candidat": "Danielle VAUZELLE",
+              "parti": "",
+              "etiquette": "LO",
+              "voix": 215
+            }
+          ]
+        },
+        {
+          "type": "LEG",
+          "annee": 2022,
+          "tour": "2",
+          "inscrits": 39550,
+          "votants": 20150,
+          "blancs": 689,
+          "nuls": 314,
+          "exprimes": 19147,
+          "listes": [
+            {
+              "candidat": "François CHARRON",
+              "parti": "LFI-NUPES",
+              "etiquette": "UG",
+              "voix": 9545
+            },
+            {
+              "candidat": "Bastien MARCHIVE",
+              "parti": "",
+              "etiquette": "UC",
+              "voix": 9601,
+              "statut": "elu"
+            }
+          ]
+        },
+        {
+          "type": "LEG",
+          "annee": 2024,
+          "tour": "1",
+          "inscrits": 40026,
+          "votants": 27313,
+          "blancs": 405,
+          "nuls": 219,
+          "exprimes": 26689,
+          "listes": [
+            {
+              "candidat": "Nathalie LANZI",
+              "parti": "PS-NFP",
+              "etiquette": "UG",
+              "voix": 10552,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Bastien MARCHIVE",
+              "parti": "",
+              "etiquette": "REN",
+              "voix": 10540,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Dorothée CHAMPEAU",
+              "parti": "",
+              "etiquette": "RN",
+              "voix": 4952,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Virginie JULIARD",
+              "parti": "",
+              "etiquette": "REC",
+              "voix": 325
+            },
+            {
+              "candidat": "Danielle VAUZELLE",
+              "parti": "",
+              "etiquette": "LO",
+              "voix": 277
+            }
+          ]
+        },
+        {
+          "type": "LEG",
+          "annee": 2024,
+          "tour": "2",
+          "inscrits": 40020,
+          "votants": 27103,
+          "blancs": 342,
+          "nuls": 166,
+          "exprimes": 26595,
+          "listes": [
+            {
+              "candidat": "Nathalie LANZI",
+              "parti": "PS-NFP",
+              "etiquette": "UG",
+              "voix": 10597
+            },
+            {
+              "candidat": "Bastien MARCHIVE",
+              "parti": "",
+              "etiquette": "REN",
+              "voix": 11069,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Dorothée CHAMPEAU",
+              "parti": "",
+              "etiquette": "RN",
+              "voix": 4929
+            }
+          ]
+        },
+        {
+          "type": "PRE",
+          "annee": 2017,
+          "tour": "1",
+          "inscrits": 39962,
+          "votants": 30553,
+          "blancs": 450,
+          "nuls": 194,
+          "exprimes": 29909,
+          "listes": [
+            {
+              "candidat": "Jacques CHEMINADE",
+              "parti": "Solidarité et Progrès",
+              "etiquette": "DIV",
+              "voix": 39
+            },
+            {
+              "candidat": "Nathalie ARTHAUD",
+              "parti": "",
+              "etiquette": "LO",
+              "voix": 190
+            },
+            {
+              "candidat": "François ASSELINEAU",
+              "parti": "UPR",
+              "etiquette": "DSV",
+              "voix": 231
+            },
+            {
+              "candidat": "Jean LASSALLE",
+              "parti": "Résistons!",
+              "etiquette": "DIV",
+              "voix": 246
+            },
+            {
+              "candidat": "Philippe POUTOU",
+              "parti": "NPA",
+              "etiquette": "EXG",
+              "voix": 378
+            },
+            {
+              "candidat": "Nicolas DUPONT-AIGNAN",
+              "parti": "DLF!",
+              "etiquette": "ExD",
+              "voix": 1071
+            },
+            {
+              "candidat": "Benoît HAMON",
+              "parti": "",
+              "etiquette": "SOC",
+              "voix": 3076
+            },
+            {
+              "candidat": "Marine LE PEN",
+              "parti": "",
+              "etiquette": "RN",
+              "voix": 3155
+            },
+            {
+              "candidat": "François FILLON",
+              "parti": "",
+              "etiquette": "LR",
+              "voix": 4935,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Jean-Luc MELENCHON",
+              "parti": "",
+              "etiquette": "FI",
+              "voix": 7033
+            },
+            {
+              "candidat": "Emmanuel MACRON",
+              "parti": "",
+              "etiquette": "REN",
+              "voix": 9559,
+              "statut": "qualifie"
+            }
+          ]
+        },
+        {
+          "type": "PRE",
+          "annee": 2017,
+          "tour": "2",
+          "inscrits": 39962,
+          "votants": 29676,
+          "blancs": 2336,
+          "nuls": 806,
+          "exprimes": 26534,
+          "listes": [
+            {
+              "candidat": "Marine LE PEN",
+              "parti": "",
+              "etiquette": "RN",
+              "voix": 4739
+            },
+            {
+              "candidat": "Emmanuel MACRON",
+              "parti": "",
+              "etiquette": "REN",
+              "voix": 21797,
+              "statut": "elu"
+            }
+          ]
+        },
+        {
+          "type": "PRE",
+          "annee": 2022,
+          "tour": "1",
+          "inscrits": 39294,
+          "votants": 29541,
+          "blancs": 464,
+          "nuls": 184,
+          "exprimes": 28893,
+          "listes": [
+            {
+              "candidat": "Nathalie ARTHAUD",
+              "parti": "",
+              "etiquette": "LO",
+              "voix": 157
+            },
+            {
+              "candidat": "Jean LASSALLE",
+              "parti": "Résistons!",
+              "etiquette": "DIV",
+              "voix": 608
+            },
+            {
+              "candidat": "Philippe POUTOU",
+              "parti": "NPA",
+              "etiquette": "EXG",
+              "voix": 253
+            },
+            {
+              "candidat": "Nicolas DUPONT-AIGNAN",
+              "parti": "DLF!",
+              "etiquette": "ExD",
+              "voix": 419
+            },
+            {
+              "candidat": "Anne HIDALGO",
+              "parti": "",
+              "etiquette": "SOC",
+              "voix": 767
+            },
+            {
+              "candidat": "Marine LE PEN",
+              "parti": "",
+              "etiquette": "RN",
+              "voix": 3932,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Valérie PECRESSE",
+              "parti": "",
+              "etiquette": "LR",
+              "voix": 1111
+            },
+            {
+              "candidat": "Jean-Luc MELENCHON",
+              "parti": "",
+              "etiquette": "FI",
+              "voix": 7436,
+              "statut": ""
+            },
+            {
+              "candidat": "Emmanuel MACRON",
+              "parti": "",
+              "etiquette": "REN",
+              "voix": 10132,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Fabien ROUSSEL",
+              "parti": "",
+              "etiquette": "COM",
+              "voix": 744
+            },
+            {
+              "candidat": "Yannick JADOT",
+              "parti": "",
+              "etiquette": "ECO",
+              "voix": 2064
+            },
+            {
+              "candidat": "Eric ZEMMOUR",
+              "parti": "",
+              "etiquette": "REC",
+              "voix": 1271
+            }
+          ]
+        },
+        {
+          "type": "PRE",
+          "annee": 2022,
+          "tour": "2",
+          "inscrits": 39292,
+          "votants": 28322,
+          "blancs": 2032,
+          "nuls": 764,
+          "exprimes": 25526,
+          "listes": [
+            {
+              "candidat": "Marine LE PEN",
+              "parti": "",
+              "etiquette": "RN",
+              "voix": 6511
+            },
+            {
+              "candidat": "Emmanuel MACRON",
+              "parti": "",
+              "etiquette": "REN",
+              "voix": 19017,
+              "statut": "elu"
+            }
+          ]
+        },
+        {
+          "type": "LEG",
+          "annee": 2017,
+          "tour": "2",
+          "inscrits": 39929,
+          "votants": 17555,
+          "blancs": 901,
+          "nuls": 392,
+          "exprimes": 16262,
+          "listes": [
+            {
+              "candidat": "Guillaume CHICHE",
+              "parti": "",
+              "etiquette": "REN",
+              "voix": 9395,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Nathalie SEGUIN",
+              "parti": "",
+              "etiquette": "FI",
+              "voix": 6867
+            }
+          ]
+        },
+        {
+          "type": "EUR",
+          "annee": 2024,
+          "tour": "U",
+          "inscrits": 40087,
+          "votants": 20848,
+          "blancs": 229,
+          "nuls": 248,
+          "exprimes": 20371,
+          "listes": [
+            {
+              "candidat": "Philippe PONGE",
+              "parti": "Pour une démocratie réelle",
+              "etiquette": "DIV",
+              "voix": 2
+            },
+            {
+              "candidat": "Marion MARECHAL",
+              "parti": "",
+              "etiquette": "REC",
+              "voix": 804,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Manon AUBRY",
+              "parti": "",
+              "etiquette": "FI",
+              "voix": 2093,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Jordan BARDELLA",
+              "parti": "",
+              "etiquette": "RN",
+              "voix": 3616,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Marie TOUSSAINT",
+              "parti": "",
+              "etiquette": "ECO",
+              "voix": 1961,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Hélène TOUY",
+              "parti": "",
+              "etiquette": "ANM",
+              "voix": 349
+            },
+            {
+              "candidat": "Caroline ZORN",
+              "parti": "Parti Pirate",
+              "etiquette": "DIV",
+              "voix": 9
+            },
+            {
+              "candidat": "Valérie HAYER",
+              "parti": "Besoin d'Europe",
+              "etiquette": "REN",
+              "voix": 3704,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Marine CHOLLEY",
+              "parti": "Equinoxe",
+              "etiquette": "ECO",
+              "voix": 82
+            },
+            {
+              "candidat": "Yann WEHRLING",
+              "parti": "Ecologie positive et territoires",
+              "etiquette": "ECO",
+              "voix": 149
+            },
+            {
+              "candidat": "François ASSELINEAU",
+              "parti": "UPR",
+              "etiquette": "DSV",
+              "voix": 171
+            },
+            {
+              "candidat": "Michel SIMONIN",
+              "parti": "Paix et décroissance",
+              "etiquette": "EXG",
+              "voix": 1
+            },
+            {
+              "candidat": "François-Xavier BELLAMY",
+              "parti": "La droite pour faire entendre",
+              "etiquette": "LR",
+              "voix": 1295,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Nathalie ARTHAUD",
+              "parti": "",
+              "etiquette": "LO",
+              "voix": 97
+            },
+            {
+              "candidat": "Pierre LARROUTUROU",
+              "parti": "Changer l'Europe",
+              "etiquette": "DVG",
+              "voix": 4,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Georges KUZMANOVIC",
+              "parti": "Nous le peuple",
+              "etiquette": "DIV",
+              "voix": 3
+            },
+            {
+              "candidat": "Florian PHILIPPOT",
+              "parti": "L'Europe ça suffit !",
+              "etiquette": "ExD",
+              "voix": 156
+            },
+            {
+              "candidat": "Pierre-Marie BONNEAU",
+              "parti": "Forteresse Europe",
+              "etiquette": "ExD",
+              "voix": 1
+            },
+            {
+              "candidat": "Raphaël GLUCKSMANN",
+              "parti": "Réveiller l'Europe",
+              "etiquette": "UG",
+              "voix": 4686,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Jean LASSALLE",
+              "parti": "Alliance rurale",
+              "etiquette": "DVD",
+              "voix": 273
+            },
+            {
+              "candidat": "Francis LALANNE",
+              "parti": "France Libre",
+              "etiquette": "DVExD",
+              "voix": 3
+            },
+            {
+              "candidat": "Guillaume LACROIX",
+              "parti": "Europe Territoires Ecologie",
+              "etiquette": "DVG",
+              "voix": 79,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Lorys ELMAYAN",
+              "parti": "La ruche citoyenne",
+              "etiquette": "DIV",
+              "voix": 1
+            },
+            {
+              "candidat": "Léon DEFFONTAINES",
+              "parti": "Gauche unie",
+              "etiquette": "COM",
+              "voix": 487,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Gaël COSTE-MEUNIER",
+              "parti": "Défendre les enfants",
+              "etiquette": "DIV",
+              "voix": 16
+            },
+            {
+              "candidat": "Jean-Marc GOVERNATORI",
+              "parti": "Ecologie au centre",
+              "etiquette": "ECO",
+              "voix": 269
+            },
+            {
+              "candidat": "Laure PATAS D'ILLIERS",
+              "parti": "Espéranto",
+              "etiquette": "DIV",
+              "voix": 7
+            },
+            {
+              "candidat": "Patrice GRUDE",
+              "parti": "Liberté démocratique française",
+              "etiquette": "DVExD",
+              "voix": 1
+            },
+            {
+              "candidat": "Selma LABIB",
+              "parti": "Urgence révolution",
+              "etiquette": "EXG",
+              "voix": 59
+            }
+          ]
+        },
+        {
+          "type": "EUR",
+          "annee": 2019,
+          "tour": "U",
+          "inscrits": 39266,
+          "votants": 19958,
+          "blancs": 322,
+          "nuls": 319,
+          "exprimes": 19317,
+          "listes": [
+            {
+              "candidat": "Manon AUBRY",
+              "parti": "",
+              "etiquette": "FI",
+              "voix": 1342,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Ian BROSSART",
+              "parti": "Pour l'Europe des gens",
+              "etiquette": "COM",
+              "voix": 446,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Benoît HAMON",
+              "parti": "",
+              "etiquette": "GEN",
+              "voix": 863,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Yannick JADOT",
+              "parti": "Europe Ecologie",
+              "etiquette": "ECO",
+              "voix": 3543,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Nathalie LOISEAU",
+              "parti": "",
+              "etiquette": "REN",
+              "voix": 5077,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Jean-Christophe LAGARDE",
+              "parti": "Les Européens",
+              "etiquette": "UDI",
+              "voix": 511,
+              "statut": "elu"
+            },
+            {
+              "candidat": "François-Xavier BELLAMY",
+              "parti": "Union de la droite et du centre",
+              "etiquette": "UDC",
+              "voix": 1189,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Nicolas DUPONT-AIGNAN",
+              "parti": "",
+              "etiquette": "ExD",
+              "voix": 375,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Florian PHILIPPOT",
+              "parti": "Ensemble Patriotes",
+              "etiquette": "ExD",
+              "voix": 38,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Jordan BARDELLA",
+              "parti": "Prenez le pouvoir",
+              "etiquette": "RN",
+              "voix": 2483,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Raphaël GLUCKSMANN",
+              "parti": "",
+              "etiquette": "UG",
+              "voix": 1870,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Dominique BOURG",
+              "parti": "Urgence écologie",
+              "etiquette": "ECO",
+              "voix": 727
+            },
+            {
+              "candidat": "Helène THOUY",
+              "parti": "",
+              "etiquette": "ANM",
+              "voix": 330
+            },
+            {
+              "candidat": "François ASSELINEAU",
+              "parti": "Ensemble pour le Frexit",
+              "etiquette": "DSV",
+              "voix": 190
+            },
+            {
+              "candidat": "Nathalie ARTHAUD",
+              "parti": "",
+              "etiquette": "LO",
+              "voix": 162
+            },
+            {
+              "candidat": "Francis LALANNE",
+              "parti": "Alliance Jaune",
+              "etiquette": "DIV",
+              "voix": 77
+            },
+            {
+              "candidat": "Olivier BIDOU",
+              "parti": "Les Oubliés de l'Europe",
+              "etiquette": "DIV",
+              "voix": 35
+            },
+            {
+              "candidat": "Pierre DIEUMEGARD",
+              "parti": "Espéranto",
+              "etiquette": "DIV",
+              "voix": 20
+            },
+            {
+              "candidat": "Sophie CAILLAUD",
+              "parti": "Allons enfants",
+              "etiquette": "DIV",
+              "voix": 10
+            },
+            {
+              "candidat": "Audric ALEXANDRE",
+              "parti": "PACE",
+              "etiquette": "DIV",
+              "voix": 8
+            },
+            {
+              "candidat": "Florie MARIE",
+              "parti": "Parti Pirate",
+              "etiquette": "DIV",
+              "voix": 7
+            },
+            {
+              "candidat": "Robert DE PREVOISIN",
+              "parti": "Une France Royale",
+              "etiquette": "DSV",
+              "voix": 6
+            },
+            {
+              "candidat": "Gilles HELGEN",
+              "parti": "Mouvement pour l'initiative citoyenne",
+              "etiquette": "DIV",
+              "voix": 2
+            },
+            {
+              "candidat": "Nagib AZERGUI",
+              "parti": "Une Europe au service des Peuples",
+              "etiquette": "DVG",
+              "voix": 2
+            },
+            {
+              "candidat": "Yves GERNIGON",
+              "parti": "Parti Fédéraliste Européen",
+              "etiquette": "DIV",
+              "voix": 1
+            },
+            {
+              "candidat": "Thérèse DEFEL",
+              "parti": "Décroissance 2019",
+              "etiquette": "ECO",
+              "voix": 1
+            },
+            {
+              "candidat": "Christophe CHALENCON",
+              "parti": "Evolution citoyenne",
+              "etiquette": "DIV",
+              "voix": 1
+            },
+            {
+              "candidat": "Nathalie TOMASINI",
+              "parti": "A voix égales",
+              "etiquette": "DIV",
+              "voix": 1
+            }
+          ]
+        },
+        {
+          "type": "REG",
+          "annee": 2021,
+          "tour": "1",
+          "canton": null,
+          "inscrits": 38746,
+          "votants": 12124,
+          "blancs": 172,
+          "nuls": 182,
+          "exprimes": 11770,
+          "listes": [
+            {
+              "candidat": "Alain ROUSSET",
+              "parti": "Nos Territoires nos énergoes",
+              "etiquette": "UG",
+              "voix": 3195,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Nicolas THIERRY",
+              "parti": "Nos terroirs notre avenir",
+              "etiquette": "ECO",
+              "voix": 2529,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Genviève DARRIEUSECQ",
+              "parti": "L'Union fait la région",
+              "etiquette": "UC",
+              "voix": 2149,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Edwige DIAZ",
+              "parti": "Une région au service de la France",
+              "etiquette": "RN",
+              "voix": 1199,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Nicolas FLORIAN",
+              "parti": "",
+              "etiquette": "UDC",
+              "voix": 1151,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Clémence GUETTE",
+              "parti": "On est là !",
+              "etiquette": "EXG",
+              "voix": 1112
+            },
+            {
+              "candidat": "Eddie PUYJALON",
+              "parti": "Mouvement de la ruralité",
+              "etiquette": "DVD",
+              "voix": 232
+            },
+            {
+              "candidat": "Guillaume PRECHE",
+              "parti": "",
+              "etiquette": "LO",
+              "voix": 203
+            }
+          ]
+        },
+        {
+          "type": "REG",
+          "annee": 2021,
+          "tour": "2",
+          "canton": null,
+          "inscrits": 38797,
+          "votants": 12524,
+          "blancs": 183,
+          "nuls": 242,
+          "exprimes": 12099,
+          "listes": [
+            {
+              "candidat": "Alain ROUSSET",
+              "parti": "Nos Territoires nos énergoes",
+              "etiquette": "UG",
+              "voix": 4514,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Nicolas THIERRY",
+              "parti": "Nos terroirs notre avenir",
+              "etiquette": "ECO",
+              "voix": 3138,
+              "statut": "present"
+            },
+            {
+              "candidat": "Genviève DARRIEUSECQ",
+              "parti": "L'Union fait la région",
+              "etiquette": "UC",
+              "voix": 1957,
+              "statut": "present"
+            },
+            {
+              "candidat": "Edwige DIAZ",
+              "parti": "Une région au service de la France",
+              "etiquette": "RN",
+              "voix": 1180,
+              "statut": "present"
+            },
+            {
+              "candidat": "Nicolas FLORIAN",
+              "parti": "",
+              "etiquette": "UDC",
+              "voix": 1310,
+              "statut": "present"
+            }
+          ]
+        }
+      ],
+      "_latLng": [
+        46.3239233,
+        -0.4646064
+      ]
+    },
+    {
+      "nom": "Biarritz",
+      "insee": "64122",
+      "dept": "64 - Pyrénées-Atlantiques",
+      "population": "25810",
+      "bureaux": [],
+      "scrutins": [
+        {
+          "type": "MUN",
+          "annee": 2020,
+          "tour": "1",
+          "canton": null,
+          "inscrits": 22559,
+          "votants": 9152,
+          "blancs": 81,
+          "nuls": 164,
+          "exprimes": 8907,
+          "listes": [
+            {
+              "candidat": "Maider AROSTEGUY",
+              "parti": "Pour Biarritz, pour vous",
+              "etiquette": "UD",
+              "voix": 2803,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Guillaume BARRUCQ",
+              "parti": "Biarritz nouvelle vague",
+              "etiquette": "DVC",
+              "voix": 1445,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Nathalie MOTSCH",
+              "parti": "Biarritz en a besoin",
+              "etiquette": "DVC",
+              "voix": 1268,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Brice MORIN",
+              "parti": "Euskal Herrian Vert & Solidaire",
+              "etiquette": "REG",
+              "voix": 1099,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Michel VEUNAC",
+              "parti": "Vivons Biarritz",
+              "etiquette": "MDM",
+              "voix": 1088,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Jean-Benoît SAINT-CRICQ",
+              "parti": "Biarritz Ensemble",
+              "etiquette": "DVD",
+              "voix": 943,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Karim GUERDANE",
+              "parti": "Biarritz bonheur",
+              "etiquette": "DVG",
+              "voix": 261
+            }
+          ]
+        },
+        {
+          "type": "MUN",
+          "annee": 2020,
+          "tour": "2",
+          "canton": null,
+          "inscrits": 22510,
+          "votants": 10354,
+          "blancs": 156,
+          "nuls": 105,
+          "exprimes": 10093,
+          "listes": [
+            {
+              "candidat": "Maider AROSTEGUY",
+              "parti": "Pour Biarritz, pour vous",
+              "etiquette": "UD",
+              "voix": 5069,
+              "statut": "elu"
+            },
+            {
+              "candidat": "Guillaume BARRUCQ",
+              "parti": "BIARRITZ NOUVELLE VAGUE VERTE ET SOLIDAIRE - OLATU BERRIA",
+              "etiquette": "DIV",
+              "voix": 2654,
+              "statut": "present"
+            },
+            {
+              "candidat": "Nathalie MOTSCH",
+              "parti": "Biarritz en a besoin",
+              "etiquette": "DVC",
+              "voix": 1488,
+              "statut": "present"
+            },
+            {
+              "candidat": "Jean-Benoît SAINT-CRICQ",
+              "parti": "Biarritz Ensemble",
+              "etiquette": "DVD",
+              "voix": 882,
+              "statut": "present"
+            }
+          ]
+        },
+        {
+          "type": "MUN",
+          "annee": 2026,
+          "tour": "1",
+          "canton": null,
+          "inscrits": 23809,
+          "votants": 13657,
+          "blancs": 105,
+          "nuls": 76,
+          "exprimes": 13476,
+          "listes": [
+            {
+              "candidat": "Serge BLANCO",
+              "parti": "Mon équipe c'est Biarritz !",
+              "etiquette": "DVC",
+              "voix": 3596,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Maider AROSTEGUY",
+              "parti": "Ensemble, vivons Biarritz",
+              "etiquette": "DVD",
+              "voix": 3584,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Ana EZCURRA",
+              "parti": "BIARRITZ BERRI AVEC ET POUR LES BIARROTS",
+              "etiquette": "UG",
+              "voix": 2402,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Jean-Baptiste DUSSAUSSOIS LARRALDE",
+              "parti": "CAP BIARRITZ",
+              "etiquette": "DVC",
+              "voix": 1767,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Guillaume BARRUCQ",
+              "parti": "Biarritz nouvelle vague",
+              "etiquette": "DVC",
+              "voix": 1638,
+              "statut": "qualifie"
+            },
+            {
+              "candidat": "Richard TARDITS",
+              "parti": "Biarritz d'abord",
+              "etiquette": "DVD",
+              "voix": 489
+            }
+          ]
+        },
+        {
+          "type": "REG",
+          "annee": 2015,
+          "tour": "1",
+          "canton": null,
+          "inscrits": 0,
+          "votants": 0,
+          "blancs": 0,
+          "nuls": 0,
+          "exprimes": 0,
+          "listes": [
+            {
+              "candidat": "(Tête de liste RN)",
+              "parti": "Front National",
+              "etiquette": "RN",
+              "voix": 0
+            },
+            {
+              "candidat": "(Tête de liste gauche)",
+              "parti": "Parti socialiste",
+              "etiquette": "SOC",
+              "voix": 0
+            },
+            {
+              "candidat": "(Tête de liste UMP/LR)",
+              "parti": "Les Républicains / UMP",
+              "etiquette": "LR",
+              "voix": 0
+            },
+            {
+              "candidat": "(Tête de liste FI/FdG)",
+              "parti": "Front de Gauche",
+              "etiquette": "FI",
+              "voix": 0
+            },
+            {
+              "candidat": "(Tête de liste EELV)",
+              "parti": "Europe Écologie",
+              "etiquette": "ECO",
+              "voix": 0
+            },
+            {
+              "candidat": "(Divers)",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 0
+            }
+          ]
+        },
+        {
+          "type": "REG",
+          "annee": 2015,
+          "tour": "2",
+          "canton": null,
+          "inscrits": 0,
+          "votants": 0,
+          "blancs": 0,
+          "nuls": 0,
+          "exprimes": 0,
+          "listes": [
+            {
+              "candidat": "(Tête de liste fusionnée 1)",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 0
+            },
+            {
+              "candidat": "(Tête de liste fusionnée 2)",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 0
+            }
+          ]
+        },
+        {
+          "type": "REG",
+          "annee": 2021,
+          "tour": "1",
+          "canton": null,
+          "inscrits": 0,
+          "votants": 0,
+          "blancs": 0,
+          "nuls": 0,
+          "exprimes": 0,
+          "listes": [
+            {
+              "candidat": "(Tête de liste gauche/NUPES)",
+              "parti": "Union de la Gauche",
+              "etiquette": "UG",
+              "voix": 0
+            },
+            {
+              "candidat": "(Tête de liste Ensemble)",
+              "parti": "Ensemble / LREM",
+              "etiquette": "REN",
+              "voix": 0
+            },
+            {
+              "candidat": "(Tête de liste RN)",
+              "parti": "Rassemblement National",
+              "etiquette": "RN",
+              "voix": 0
+            },
+            {
+              "candidat": "(Tête de liste LR)",
+              "parti": "Les Républicains",
+              "etiquette": "LR",
+              "voix": 0
+            },
+            {
+              "candidat": "(Tête de liste Écologistes)",
+              "parti": "EELV",
+              "etiquette": "ECO",
+              "voix": 0
+            },
+            {
+              "candidat": "(Divers)",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 0
+            }
+          ]
+        },
+        {
+          "type": "REG",
+          "annee": 2021,
+          "tour": "2",
+          "canton": null,
+          "inscrits": 0,
+          "votants": 0,
+          "blancs": 0,
+          "nuls": 0,
+          "exprimes": 0,
+          "listes": [
+            {
+              "candidat": "(Tête de liste fusionnée 1)",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 0
+            },
+            {
+              "candidat": "(Tête de liste fusionnée 2)",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 0
+            },
+            {
+              "candidat": "(Tête de liste fusionnée 3)",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 0
+            }
+          ]
+        },
+        {
+          "type": "LEG",
+          "annee": 2017,
+          "tour": "1",
+          "canton": null,
+          "inscrits": 0,
+          "votants": 0,
+          "blancs": 0,
+          "nuls": 0,
+          "exprimes": 0,
+          "listes": [
+            {
+              "candidat": "(Candidat LREM local)",
+              "parti": "La République En Marche",
+              "etiquette": "REN",
+              "voix": 0
+            },
+            {
+              "candidat": "(Candidat FN local)",
+              "parti": "Front National",
+              "etiquette": "RN",
+              "voix": 0
+            },
+            {
+              "candidat": "(Candidat LR local)",
+              "parti": "Les Républicains",
+              "etiquette": "LR",
+              "voix": 0
+            },
+            {
+              "candidat": "(Candidat FI local)",
+              "parti": "La France Insoumise",
+              "etiquette": "FI",
+              "voix": 0
+            },
+            {
+              "candidat": "(Candidat PS local)",
+              "parti": "Parti socialiste",
+              "etiquette": "SOC",
+              "voix": 0
+            },
+            {
+              "candidat": "(Candidat divers)",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 0
+            }
+          ]
+        },
+        {
+          "type": "LEG",
+          "annee": 2017,
+          "tour": "2",
+          "canton": null,
+          "inscrits": 0,
+          "votants": 0,
+          "blancs": 0,
+          "nuls": 0,
+          "exprimes": 0,
+          "listes": [
+            {
+              "candidat": "(Candidat élu)",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 0
+            },
+            {
+              "candidat": "(Candidat 2)",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 0
+            }
+          ]
+        },
+        {
+          "type": "LEG",
+          "annee": 2022,
+          "tour": "1",
+          "canton": null,
+          "inscrits": 0,
+          "votants": 0,
+          "blancs": 0,
+          "nuls": 0,
+          "exprimes": 0,
+          "listes": [
+            {
+              "candidat": "(Candidat RN local)",
+              "parti": "Rassemblement National",
+              "etiquette": "RN",
+              "voix": 0
+            },
+            {
+              "candidat": "(Candidat NUPES local)",
+              "parti": "NUPES",
+              "etiquette": "UG",
+              "voix": 0
+            },
+            {
+              "candidat": "(Candidat Ensemble local)",
+              "parti": "Ensemble / Renaissance",
+              "etiquette": "REN",
+              "voix": 0
+            },
+            {
+              "candidat": "(Candidat LR local)",
+              "parti": "Les Républicains",
+              "etiquette": "LR",
+              "voix": 0
+            },
+            {
+              "candidat": "(Candidat divers)",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 0
+            }
+          ]
+        },
+        {
+          "type": "LEG",
+          "annee": 2022,
+          "tour": "2",
+          "canton": null,
+          "inscrits": 0,
+          "votants": 0,
+          "blancs": 0,
+          "nuls": 0,
+          "exprimes": 0,
+          "listes": [
+            {
+              "candidat": "(Candidat élu)",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 0
+            },
+            {
+              "candidat": "(Candidat 2)",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 0
+            }
+          ]
+        },
+        {
+          "type": "LEG",
+          "annee": 2024,
+          "tour": "1",
+          "canton": null,
+          "inscrits": 0,
+          "votants": 0,
+          "blancs": 0,
+          "nuls": 0,
+          "exprimes": 0,
+          "listes": [
+            {
+              "candidat": "(Candidat RN local)",
+              "parti": "Rassemblement National",
+              "etiquette": "RN",
+              "voix": 0
+            },
+            {
+              "candidat": "(Candidat NFP local)",
+              "parti": "Nouveau Front Populaire",
+              "etiquette": "UG",
+              "voix": 0
+            },
+            {
+              "candidat": "(Candidat Ensemble local)",
+              "parti": "Ensemble / Renaissance",
+              "etiquette": "REN",
+              "voix": 0
+            },
+            {
+              "candidat": "(Candidat LR local)",
+              "parti": "Les Républicains",
+              "etiquette": "LR",
+              "voix": 0
+            },
+            {
+              "candidat": "(Candidat divers)",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 0
+            }
+          ]
+        },
+        {
+          "type": "LEG",
+          "annee": 2024,
+          "tour": "2",
+          "canton": null,
+          "inscrits": 0,
+          "votants": 0,
+          "blancs": 0,
+          "nuls": 0,
+          "exprimes": 0,
+          "listes": [
+            {
+              "candidat": "(Candidat élu)",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 0
+            },
+            {
+              "candidat": "(Candidat 2)",
+              "parti": "",
+              "etiquette": "DIV",
+              "voix": 0
+            }
+          ]
+        },
+        {
+          "type": "PRE",
+          "annee": 2017,
+          "tour": "1",
+          "canton": null,
+          "inscrits": 22340,
+          "votants": 16667,
+          "blancs": 190,
+          "nuls": 62,
+          "exprimes": 16415,
+          "listes": [
+            {
+              "candidat": "Emmanuel Macron",
+              "parti": "La République en Marche !",
+              "etiquette": "REN",
+              "voix": 4490
+            },
+            {
+              "candidat": "Marine Le Pen",
+              "parti": "Rassemblement National",
+              "etiquette": "RN",
+              "voix": 1574
+            },
+            {
+              "candidat": "François Fillon",
+              "parti": "Les Républicains",
+              "etiquette": "LR",
+              "voix": 5280
+            },
+            {
+              "candidat": "Jean-Luc Mélenchon",
+              "parti": "La France Insoumise",
+              "etiquette": "FI",
+              "voix": 2717
+            },
+            {
+              "candidat": "Benoît Hamon",
+              "parti": "Parti socialiste",
+              "etiquette": "SOC",
+              "voix": 1032
+            },
+            {
+              "candidat": "Nicolas Dupont-Aignan",
+              "parti": "Debout la France",
+              "etiquette": "DSV",
+              "voix": 431
+            },
+            {
+              "candidat": "Jean Lassalle",
+              "parti": "Résistons !",
+              "etiquette": "DIV",
+              "voix": 550
+            },
+            {
+              "candidat": "Philippe Poutou",
+              "parti": "NPA",
+              "etiquette": "EXG",
+              "voix": 165
+            },
+            {
+              "candidat": "François Asselineau",
+              "parti": "UPR",
+              "etiquette": "DIV",
+              "voix": 112
+            },
+            {
+              "candidat": "Nathalie Arthaud",
+              "parti": "Lutte Ouvrière",
+              "etiquette": "LO",
+              "voix": 50
+            },
+            {
+              "candidat": "Jacques Cheminade",
+              "parti": "Solidarité et Progrès",
+              "etiquette": "DIV",
+              "voix": 13
+            }
+          ]
+        },
+        {
+          "type": "PRE",
+          "annee": 2017,
+          "tour": "2",
+          "canton": null,
+          "inscrits": 0,
+          "votants": 0,
+          "blancs": 0,
+          "nuls": 0,
+          "exprimes": 0,
+          "listes": [
+            {
+              "candidat": "Emmanuel Macron",
+              "parti": "En Marche !",
+              "etiquette": "REN",
+              "voix": 0
+            },
+            {
+              "candidat": "Marine Le Pen",
+              "parti": "Front National",
+              "etiquette": "RN",
+              "voix": 0
+            }
+          ]
+        },
+        {
+          "type": "PRE",
+          "annee": 2022,
+          "tour": "1",
+          "canton": null,
+          "inscrits": 0,
+          "votants": 0,
+          "blancs": 0,
+          "nuls": 0,
+          "exprimes": 0,
+          "listes": [
+            {
+              "candidat": "Marine Le Pen",
+              "parti": "Rassemblement National",
+              "etiquette": "RN",
+              "voix": 0
+            },
+            {
+              "candidat": "Emmanuel Macron",
+              "parti": "Renaissance / LREM",
+              "etiquette": "REN",
+              "voix": 0
+            },
+            {
+              "candidat": "Jean-Luc Mélenchon",
+              "parti": "La France Insoumise",
+              "etiquette": "FI",
+              "voix": 0
+            },
+            {
+              "candidat": "Éric Zemmour",
+              "parti": "Reconquête !",
+              "etiquette": "REC",
+              "voix": 0
+            },
+            {
+              "candidat": "Valérie Pécresse",
+              "parti": "Les Républicains",
+              "etiquette": "LR",
+              "voix": 0
+            },
+            {
+              "candidat": "Yannick Jadot",
+              "parti": "Les Écologistes / EELV",
+              "etiquette": "ECO",
+              "voix": 0
+            },
+            {
+              "candidat": "Jean Lassalle",
+              "parti": "Résistons !",
+              "etiquette": "DIV",
+              "voix": 0
+            },
+            {
+              "candidat": "Fabien Roussel",
+              "parti": "Parti communiste",
+              "etiquette": "COM",
+              "voix": 0
+            },
+            {
+              "candidat": "Nicolas Dupont-Aignan",
+              "parti": "Debout la France",
+              "etiquette": "DSV",
+              "voix": 0
+            },
+            {
+              "candidat": "Anne Hidalgo",
+              "parti": "Parti socialiste",
+              "etiquette": "SOC",
+              "voix": 0
+            },
+            {
+              "candidat": "Philippe Poutou",
+              "parti": "NPA",
+              "etiquette": "EXG",
+              "voix": 0
+            },
+            {
+              "candidat": "Nathalie Arthaud",
+              "parti": "Lutte Ouvrière",
+              "etiquette": "LO",
+              "voix": 0
+            }
+          ]
+        },
+        {
+          "type": "PRE",
+          "annee": 2022,
+          "tour": "2",
+          "canton": null,
+          "inscrits": 0,
+          "votants": 0,
+          "blancs": 0,
+          "nuls": 0,
+          "exprimes": 0,
+          "listes": [
+            {
+              "candidat": "Emmanuel Macron",
+              "parti": "Renaissance / LREM",
+              "etiquette": "REN",
+              "voix": 0
+            },
+            {
+              "candidat": "Marine Le Pen",
+              "parti": "Rassemblement National",
+              "etiquette": "RN",
+              "voix": 0
+            }
+          ]
+        },
+        {
+          "type": "EUR",
+          "annee": 2019,
+          "tour": "U",
+          "canton": null,
+          "inscrits": 0,
+          "votants": 0,
+          "blancs": 0,
+          "nuls": 0,
+          "exprimes": 0,
+          "listes": [
+            {
+              "candidat": "Jordan Bardella",
+              "parti": "Rassemblement National",
+              "etiquette": "RN",
+              "voix": 0
+            },
+            {
+              "candidat": "Nathalie Loiseau",
+              "parti": "Renaissance (LREM)",
+              "etiquette": "REN",
+              "voix": 0
+            },
+            {
+              "candidat": "Yannick Jadot",
+              "parti": "Europe Écologie",
+              "etiquette": "ECO",
+              "voix": 0
+            },
+            {
+              "candidat": "François-Xavier Bellamy",
+              "parti": "Les Républicains",
+              "etiquette": "LR",
+              "voix": 0
+            },
+            {
+              "candidat": "Manon Aubry",
+              "parti": "La France Insoumise",
+              "etiquette": "FI",
+              "voix": 0
+            },
+            {
+              "candidat": "Raphaël Glucksmann",
+              "parti": "PS / PP",
+              "etiquette": "SOC",
+              "voix": 0
+            },
+            {
+              "candidat": "Ian Brossat",
+              "parti": "Parti communiste",
+              "etiquette": "COM",
+              "voix": 0
+            },
+            {
+              "candidat": "Nathalie Arthaud",
+              "parti": "Lutte Ouvrière",
+              "etiquette": "LO",
+              "voix": 0
+            }
+          ]
+        },
+        {
+          "type": "EUR",
+          "annee": 2024,
+          "tour": "U",
+          "canton": null,
+          "inscrits": 0,
+          "votants": 0,
+          "blancs": 0,
+          "nuls": 0,
+          "exprimes": 0,
+          "listes": [
+            {
+              "candidat": "Jordan Bardella",
+              "parti": "Rassemblement National",
+              "etiquette": "RN",
+              "voix": 0
+            },
+            {
+              "candidat": "Valérie Hayer",
+              "parti": "Renaissance / Renew",
+              "etiquette": "REN",
+              "voix": 0
+            },
+            {
+              "candidat": "Raphaël Glucksmann",
+              "parti": "PS / Place Publique",
+              "etiquette": "PLP",
+              "voix": 0
+            },
+            {
+              "candidat": "Manon Aubry",
+              "parti": "La France Insoumise",
+              "etiquette": "FI",
+              "voix": 0
+            },
+            {
+              "candidat": "Marion Maréchal",
+              "parti": "Reconquête !",
+              "etiquette": "REC",
+              "voix": 0
+            },
+            {
+              "candidat": "François-Xavier Bellamy",
+              "parti": "Les Républicains",
+              "etiquette": "LR",
+              "voix": 0
+            },
+            {
+              "candidat": "Marie Toussaint",
+              "parti": "Les Écologistes / EELV",
+              "etiquette": "ECO",
+              "voix": 0
+            },
+            {
+              "candidat": "Léon Deffontaines",
+              "parti": "Parti communiste",
+              "etiquette": "COM",
+              "voix": 0
+            },
+            {
+              "candidat": "François Asselineau",
+              "parti": "UPR",
+              "etiquette": "DIV",
+              "voix": 0
+            },
+            {
+              "candidat": "Nathalie Arthaud",
+              "parti": "Lutte Ouvrière",
+              "etiquette": "LO",
+              "voix": 0
+            }
+          ]
+        }
+      ],
+      "_latLng": [
+        43.4711438,
+        -1.5527266
+      ]
+    }
+  ],
+  "selectedCommune": 1,
+  "selectedBureau": null
+}
