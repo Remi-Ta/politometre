@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Politomètre – Mesurez la trajectoire politique de votre ville</title>
+<title>Politomètre — Carte politique des communes</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
@@ -129,7 +129,7 @@ header{
 .card:hover{box-shadow:var(--shadow-lg);}
 .card-title{
   font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
-  color:var(--muted);margin-bottom:20px;
+  color:var(--muted);margin-bottom:24px;
   display:flex;align-items:center;gap:8px;
 }
 .card-title::before{
@@ -385,12 +385,12 @@ header{
 </div>
 
 <header>
-  <div style="display:flex;align-items:center;gap:14px">
+  <div style="display:flex;flex-direction:column;gap:2px">
     <div class="logo"><span style="color:var(--accent)">POLITO</span>MÈTRE</div>
-    <div style="font-size:11px;color:var(--muted);font-weight:500;display:none" id="sloganHeader">Mesurez la trajectoire politique de votre ville</div>
+    <div style="font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.04em">Mesurez la trajectoire politique de votre ville</div>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <span style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#1a7a50;background:#e6faf2;padding:4px 12px;border-radius:20px;border:1px solid #a0d4b8;font-weight:600">👁 Lecture seule</span>
+    <span id="saveStatus" style="font-size:11px;font-family:'IBM Plex Mono',monospace;display:none"></span>
   </div>
 </header>
 
@@ -456,6 +456,33 @@ header{
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('bureau')">Annuler</button>
       <button class="btn btn-primary" id="btnSaveBureau" onclick="saveBureau()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CRÉATEUR D'ÉLECTIONS -->
+<div class="modal-overlay" id="modalCreateur">
+  <div class="modal" style="width:720px">
+    <h2>Créateur d'élections</h2>
+    <p class="subtitle">Générez des scrutins pré-remplis pour une commune. Vous pourrez ensuite les modifier individuellement.</p>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:12px;color:var(--muted2)">
+      <b>Commune :</b> <span id="crCommuneNom">—</span> &nbsp;·&nbsp;
+      <b>Département :</b> <span id="crDept">—</span> &nbsp;·&nbsp;
+      <b>Région :</b> <span id="crRegion">—</span>
+    </div>
+
+    <div style="margin-bottom:14px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Sélectionnez les élections à créer</div>
+      <div id="crElectionsList" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+
+    <div style="background:#fff8e6;border:1px solid #e0c88a;border-radius:8px;padding:10px 14px;font-size:11px;color:#7a5a10;margin-bottom:16px">
+      ⚠ Les scrutins déjà existants pour cette commune ne seront <b>pas écrasés</b>. Seuls les scrutins manquants seront ajoutés.
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('createur')">Annuler</button>
+      <button class="btn btn-primary" onclick="applyCreateur()">✦ Créer les scrutins sélectionnés</button>
     </div>
   </div>
 </div>
@@ -571,7 +598,7 @@ function getC(){return state.communes[state.selectedCommune];}
 function getScrutins(){
   const c=getC();
   const src=state.selectedBureau!==null?(c.bureaux[state.selectedBureau].scrutins||[]):c.scrutins;
-  const TYPE_ORDER={MUN:0,PRE:1,LEG:2,EUR:3,REG:4,DEP:5};
+  const TYPE_ORDER={MUN:0,DEP:1,REG:2,PRE:3,LEG:4,EUR:5};
   const TOUR_ORDER={'1':0,'U':1,'2':2};
   return src.slice().sort((a,b)=>{
     if(a.annee!==b.annee)return a.annee-b.annee;
@@ -647,7 +674,16 @@ function renderSidebar(){
     });
   }else bs.style.display='none';
 }
-function selectCommune(ci){state.selectedCommune=ci;state.selectedBureau=null;save();renderSidebar();renderMain();}
+function selectCommune(ci){
+  state.selectedCommune=ci;state.selectedBureau=null;save();renderSidebar();
+  const mc=document.getElementById('mainContent');
+  if(mc){mc.style.opacity='0';mc.style.transform='translateX(8px)';}
+  renderMain();
+  if(mc){
+    mc.style.transition='opacity .25s ease, transform .25s ease';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{mc.style.opacity='1';mc.style.transform='translateX(0)';}));
+  }
+}
 function selectBureau(bi){state.selectedBureau=bi;save();renderSidebar();renderMain();}
 function deleteCommune(ci){
   if(!confirm(`Supprimer "${state.communes[ci].nom}" et toutes ses données ?`))return;
@@ -702,7 +738,7 @@ function renderMain(){
 
   const tabs=document.createElement('div');tabs.className='tabs anim';
   tabs.innerHTML=`
-    <button class="tab${activeTab==='tableau'?' active':''}" onclick="switchTab('tableau',this)">Tableau</button>
+    <button class="tab${activeTab==='tableau'?' active':''}" onclick="switchTab('tableau',this)">Résultats <span style="font-size:10px;font-family:'IBM Plex Mono',monospace;background:${activeTab==='tableau'?'rgba(255,255,255,.25)':'var(--surface2)'};padding:1px 6px;border-radius:4px;margin-left:4px">${(state.selectedBureau!==null?getC().bureaux[state.selectedBureau].scrutins:getC().scrutins).length}</span></button>
     <button class="tab${activeTab==='participation'?' active':''}" onclick="switchTab('participation',this)">Participation</button>
     <button class="tab${activeTab==='indices'?' active':''}" onclick="switchTab('indices',this)">Indices & Évolution</button>
     <button class="tab${activeTab==='elus'?' active':''}" onclick="switchTab('elus',this)">Élus</button>
@@ -719,10 +755,18 @@ function switchTab(tab,btn){
   activeTab=tab;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
-  if(tab==='tableau')renderTabTableau();
-  else if(tab==='participation')renderTabParticipation();
-  else if(tab==='indices')renderTabIndices();
-  else renderTabElus();
+  const tc=document.getElementById('tabContent');
+  if(tc){tc.style.opacity='0';tc.style.transform='translateY(6px)';}
+  requestAnimationFrame(()=>{
+    if(tab==='tableau')renderTabTableau();
+    else if(tab==='participation')renderTabParticipation();
+    else if(tab==='indices')renderTabIndices();
+    else renderTabElus();
+    if(tc){
+      tc.style.transition='opacity .22s ease, transform .22s ease';
+      requestAnimationFrame(()=>{tc.style.opacity='1';tc.style.transform='translateY(0)';});
+    }
+  });
 }
 
 // ═══════════════════════════════════════════════════════
@@ -754,7 +798,7 @@ function renderTabTableau(){
     });
   };
   rightSide.appendChild(pillsWrap);
-  // read-only: no add scrutin
+  // read-only: no buttons
   filterBar.appendChild(hdr2);filterBar.appendChild(rightSide);
   content.appendChild(filterBar);
 
@@ -796,7 +840,7 @@ function renderTabTableau(){
         })(),
       };
 
-      const SHOW_LIMIT=5;
+      const SHOW_LIMIT=10;
       let tbodyVisible='';let tbodyHidden='';
       (s.listes||[]).slice().sort((a,b)=>b.voix-a.voix).forEach((l,li)=>{
         if(!l.candidat)return;
@@ -813,13 +857,7 @@ function renderTabTableau(){
           <td><span class="etiq-tag" style="background:${n.color}18;color:${n.color};border:1px solid ${n.color}40"><span class="edot" style="background:${n.color}"></span>${n.label}</span>${pos?`<div style="font-size:10px;color:${pos.color};margin-top:3px;font-weight:600">→ ${pos.label}</div>`:''}</td>
           <td><div class="pct-wrap"><div class="pct-bar" style="width:${barW}px;background:${n.color}"></div><span class="pct-val">${pct} %</span></div></td>
           <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted2);font-weight:600">${fmt(l.voix)}</td>
-          <td>
-            <div style="display:flex;gap:4px;flex-wrap:wrap">
-              ${stLabels.elu?`<button class="statut-btn${st==='elu'?' elu':''}" onclick="setStatut(${ridx},'${esc(l.candidat)}','elu')">${stLabels.elu}</button>`:''}
-              ${stLabels.qualifie?`<button class="statut-btn${st==='qualifie'?' qualifie':''}" onclick="setStatut(${ridx},'${esc(l.candidat)}','qualifie')">${stLabels.qualifie}</button>`:''}
-              ${stLabels.present?`<button class="statut-btn${st==='present'?' present':''}" onclick="setStatut(${ridx},'${esc(l.candidat)}','present')">${stLabels.present}</button>`:''}
-            </div>
-          </td>
+
         </tr>`;
         if(li<SHOW_LIMIT)tbodyVisible+=row;else tbodyHidden+=row;
       });
@@ -828,6 +866,11 @@ function renderTabTableau(){
         if(blancs)tbody+=`<tr style="opacity:.5"><td colspan="2" style="font-size:12px;color:var(--muted);font-style:italic;padding:7px 10px">Blancs</td><td><span class="pct-val">${vot?((blancs/vot)*100).toFixed(2):'-'} %</span></td><td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)">${fmt(blancs)}</td><td></td></tr>`;
         if(nuls)tbody+=`<tr style="opacity:.5"><td colspan="2" style="font-size:12px;color:var(--muted);font-style:italic;padding:7px 10px">Nuls</td><td><span class="pct-val">${vot?((nuls/vot)*100).toFixed(2):'-'} %</span></td><td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)">${fmt(nuls)}</td><td></td></tr>`;
       }
+      // Ajouter les lignes cachées avec bouton toggle si nécessaire
+      const hiddenCount=(s.listes||[]).length-SHOW_LIMIT;
+      const hasHidden=tbodyHidden.length>0;
+      const toggleId='tgl-'+ridx+'-'+Date.now();
+
       const partPct=ins?(vot/ins*100):0;
       const abstPct=ins?((ins-vot)/ins*100):0;
       const card=document.createElement('div');
@@ -861,12 +904,12 @@ function renderTabTableau(){
 <!-- read-only -->
         </div>
         <table class="listes-table">
-          <thead><tr><th>Candidat(e)</th><th>Étiquette → Position</th><th>Score</th><th>Voix</th><th>Statut</th></tr></thead>
+          <thead><tr><th>Candidat(e)</th><th>Étiquette → Position</th><th>Score</th><th>Voix</th></tr></thead>
           <tbody>${tbodyVisible}</tbody>
         </table>
         ${hasHidden?`<div id="hidden-${toggleId}" style="display:none"><table class="listes-table" style="border-top:none"><tbody>${tbodyHidden}</tbody></table></div>
         <button onclick="(function(btn){const h=document.getElementById('hidden-${toggleId}');const open=h.style.display!=='none';h.style.display=open?'none':'block';btn.innerHTML=open?'<span>▾</span> Voir ${hiddenCount} candidat(e) de plus':'<span>▴</span> Réduire la liste';})(this)"
-          style="width:100%;margin-top:6px;padding:7px 14px;background:none;border:1.5px solid var(--border);border-radius:0 0 8px 8px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px"
+          style="width:100%;margin-top:0;padding:8px 14px;background:var(--surface2);border:none;border-top:1px solid var(--border);border-radius:0 0 8px 8px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px"
           onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
           onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
           <span>▾</span> Voir ${hiddenCount} candidat(e) de plus
@@ -1156,7 +1199,7 @@ function renderTabIndices(){
         </div>
       </div>
     </div>
-    <div style="margin-top:32px;padding-top:22px;border-top:1px solid var(--border)"><canvas id="evolChart" height="200"></canvas></div>`;
+    <div style="margin-top:32px;padding-top:22px;border-top:1px solid var(--border)"><div id="evolChartWrap"><canvas id="evolChart"></canvas></div></div>`;
   content.appendChild(c2);
 
   // ── INDICES PAR TYPE D'ÉLECTION ──
@@ -1165,7 +1208,7 @@ function renderTabIndices(){
     if(typesSaisisIdx.length>=2){
       const cIdx=document.createElement('div');cIdx.className='card anim anim-d3';
       let sectHtml='';
-      ['MUN','DEP','REG','LEG','PRE','EUR'].forEach(type=>{
+      ['MUN','DEP','REG','PRE','LEG','EUR'].forEach(type=>{
         const tIv=iv.filter(({s})=>s.type===type);if(!tIv.length)return;
         const tMean=parseFloat((tIv.reduce((a,{v})=>a+v,0)/tIv.length).toFixed(3));
         const tEvol=calcEvol(tIv.map(({s})=>s));
@@ -1174,16 +1217,16 @@ function renderTabIndices(){
         const evolStr=tEvol!==null?(tEvol>=0?'+':'')+tEvol.toFixed(4):'—';
         const needlePct=p2l(tMean);
         sectHtml+=`<div style="display:grid;grid-template-columns:130px 1fr 68px 100px 72px 28px;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)">
-          <span class="type-badge type-${type}" style="text-align:center;white-space:nowrap">${TYPE_LABELS[type]}</span>
-          <div style="flex:1;min-width:0">
-            <div style="position:relative;height:8px;border-radius:4px;background:${SPECTRUM_CSS};margin-bottom:3px">
+          <span class="type-badge type-${type}" style="width:118px;text-align:center;flex-shrink:0;white-space:nowrap">${TYPE_LABELS[type]}</span>
+          <div style="min-width:0">
+            <div style="position:relative;height:8px;border-radius:4px;background:${SPECTRUM_CSS}">
               <div style="position:absolute;top:-3px;width:3px;height:14px;background:#1a1d2e;border-radius:2px;transform:translateX(-50%);box-shadow:0 0 0 2px rgba(255,255,255,.8);left:${needlePct}"></div>
             </div>
           </div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;color:${td.color};width:64px;text-align:right;flex-shrink:0">${tMean>=0?'+':''}${tMean}</div>
-          <div style="font-size:11px;font-weight:700;color:${td.color};width:90px;flex-shrink:0">${td.label}</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:${evolColor};width:70px;text-align:right;flex-shrink:0" title="Tendance">${evolStr}</div>
-          <div style="font-size:10px;color:var(--muted);width:28px;text-align:center;flex-shrink:0">${tIv.length}sc.</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;color:${td.color};text-align:right">${tMean>=0?'+':''}${tMean}</div>
+          <div style="font-size:11px;font-weight:700;color:${td.color}">${td.label}</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:${evolColor};text-align:right" title="Tendance">${evolStr}</div>
+          <div style="font-size:10px;color:var(--muted);text-align:center">${tIv.length}sc.</div>
         </div>`;
       });
       // Retirer le dernier border-bottom
@@ -1342,7 +1385,8 @@ function renderTabIndices(){
     const ptColors=pts.map(p=>getPos(p.v).color);
 
     const wrap=document.getElementById('evolChartWrap');
-    if(wrap){wrap.style.height='300px';wrap.style.position='relative';}
+    const chartH=Math.max(300,pts.length*28);
+    if(wrap){wrap.style.height=chartH+'px';wrap.style.position='relative';}
 
     new Chart(document.getElementById('evolChart').getContext('2d'),{
       type:'line',
@@ -1413,8 +1457,8 @@ function renderTabIndices(){
           const y0=s.y.getPixelForValue(0);
           const ctx=chart.ctx;
           ctx.save();
-          ctx.font='600 9px IBM Plex Mono,monospace';
-          ctx.fillStyle='rgba(100,115,160,.65)';
+          ctx.font='400 10px IBM Plex Mono,monospace';
+          ctx.fillStyle='rgba(80,100,160,.7)';
           ctx.textAlign='left';
           ctx.fillText('0',chart.chartArea.left+3,y0-3);
           ctx.restore();
@@ -1496,9 +1540,21 @@ function renderTabElus(){
   if((byType.MUN||[]).length){
     cardIdx++;
     const sorted=(byType.MUN||[]).slice().sort((a,b)=>a.annee-b.annee);
-    const c=document.createElement('div');c.className=`card anim anim-d${Math.min(cardIdx,5)}`;
-    c.innerHTML=`<p class="card-title">Municipales — Maires élus</p>${timelineBlock(sorted,false)}`;
-    content.appendChild(c);
+    const current=sorted[sorted.length-1];
+    const currentN=current?getNuance(current.etiquette):null;
+    const currentBadge=current?`<div style="display:flex;align-items:center;gap:12px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:20px">
+      <div style="width:10px;height:10px;border-radius:50%;background:${currentN.color};flex-shrink:0"></div>
+      <div style="flex:1">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:2px">Maire actuel(le)</div>
+        <div style="font-size:15px;font-weight:800">${current.candidat}</div>
+        ${current.parti?`<div style="font-size:11px;color:var(--muted)">${current.parti}</div>`:''}
+      </div>
+      <span class="etiq-tag" style="background:${currentN.color}18;color:${currentN.color};border:1px solid ${currentN.color}35;font-size:10px"><span class="edot" style="background:${currentN.color}"></span>${currentN.label}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;color:var(--muted2)">depuis ${current.annee}</span>
+    </div>`:'';
+    const cMUN=document.createElement('div');cMUN.className=`card anim anim-d${Math.min(cardIdx,5)}`;
+    cMUN.innerHTML=`<p class="card-title">Municipales — Maires élus</p>${currentBadge}${timelineBlock(sorted,false)}`;
+    content.appendChild(cMUN);
   }
 
   // ── DEP ──
@@ -1664,8 +1720,8 @@ function addListeRow(data){
   const row=document.createElement('div');row.className='liste-row';
   row.innerHTML=`
     <div class="lr-main">
-      <div><div class="lr-lbl">Candidat</div><input type="text" class="lr-candidat" placeholder="Ex : Jean Dupont" value="${data?esc(data.candidat||''):''}"></div>
-      <div><div class="lr-lbl">Parti <span style="font-weight:400;text-transform:none;letter-spacing:0">(opt.)</span></div><input type="text" class="lr-parti" placeholder="PS, LFI, RN…" value="${data?esc(data.parti||''):''}"></div>
+      <div><div class="lr-lbl">Candidat(e)</div><input type="text" class="lr-candidat" placeholder="Ex : Jean Dupont" value="${data?esc(data.candidat||''):''}"></div>
+      <div><div class="lr-lbl">Parti/Liste <span style="font-weight:400;text-transform:none;letter-spacing:0">(opt.)</span></div><input type="text" class="lr-parti" placeholder="PS, LFI, RN…" value="${data?esc(data.parti||''):''}"></div>
       <div><div class="lr-lbl">Étiquette politique</div><select class="lr-etiq">${opts}</select></div>
       <div><div class="lr-lbl">Voix</div><input type="number" class="lr-voix" placeholder="0" min="0" value="${data?data.voix:''}"></div>
       <div style="padding-top:18px"><button class="del-btn" onclick="this.closest('.liste-row').remove()">×</button></div>
@@ -1703,8 +1759,8 @@ function saveScrutin(){
   const listes=[];
   document.querySelectorAll('#listesEditor .liste-row').forEach(row=>{
     const candidat=row.querySelector('.lr-candidat').value.trim();
+    if(!candidat)return;
     const voix=parseInt(row.querySelector('.lr-voix').value)||0;
-    if(!candidat||voix===0)return;
     listes.push({candidat,parti:row.querySelector('.lr-parti').value.trim(),etiquette:row.querySelector('.lr-etiq').value||'DIV',voix});
   });
   const sc={type:document.getElementById('iSType').value,annee,tour:document.getElementById('iSTour').value,canton:document.getElementById('iSCanton').value.trim()||null,inscrits:getNumVal('iSInscrits'),votants:getNumVal('iSVotants'),blancs:getNumVal('iSBlancs'),nuls:getNumVal('iSNuls'),exprimes:getNumVal('iSExprimes'),listes};
@@ -1722,7 +1778,7 @@ function deleteScrutin(idx){
 function duplicateScrutin(idx){
   const c=getC();const arr=state.selectedBureau!==null?c.bureaux[state.selectedBureau].scrutins:c.scrutins;
   const src=arr[idx];const copy=JSON.parse(JSON.stringify(src));
-  copy.listes=(copy.listes||[]).map(l=>({...l,voix:0,statut:''}));
+  copy.listes=(copy.listes||[]).map(l=>({...l,voix:0,statut:'',candidat:l.candidat,parti:l.parti,etiquette:l.etiquette}));
   copy.inscrits=src.inscrits;copy.votants=0;copy.blancs=0;copy.nuls=0;copy.exprimes=0;
   editCtx={type:'scrutin',communeIdx:state.selectedCommune,bureauIdx:state.selectedBureau,scrutinIdx:null};
   document.getElementById('mScrutinTitle').textContent='Dupliquer le scrutin';
@@ -1783,12 +1839,12 @@ async function init(){
     const r=await fetch('barometre-data.json?_='+Date.now());
     if(r.ok){const d=await r.json();if(d&&d.communes){state=d;loaded=true;}}
   }catch(e){}
-  if(!loaded){
-    document.getElementById('mainContent').innerHTML='<div class="empty-state anim"><div class="icon">📂</div><p>Aucune donnée trouvée.<br><small style="color:var(--muted)">Placez barometre-data.json dans le même dossier.</small></p></div>';
-  }
-  renderSidebar();if(state.selectedCommune!==null)renderMain();
+  if(!loaded){document.getElementById('mainContent').innerHTML='<div class="empty-state anim"><div class="icon">📂</div><p>Aucune donnée trouvée.<br><small style="color:var(--muted)">Placez barometre-data.json dans le même dossier.</small></p></div>';}
+  renderSidebar();
+  if(state.communes.length&&state.selectedCommune===null){state.selectedCommune=0;}
+  if(state.selectedCommune!==null)renderMain();
 }
-function save(){/* read-only — no write */}
+function save(){/* read-only */}
 async function saveToServer(){
   if(!serverOnline)return;
   try{
@@ -1819,47 +1875,423 @@ function showStatus(msg,color,duration=3000){
   el.textContent=msg;el.style.color=color;el.style.display='inline';
   clearTimeout(el._t);el._t=setTimeout(()=>{el.style.display='none';},duration);
 }
-function exportData(){saveToFile();}
-document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
-
-// ── Animations compteur ────────────────────────────────
-function animCountUp(el,target,decimals,suffix,duration){
-  if(!el)return;
-  const start=performance.now();
-  function step(now){
-    const t=Math.min((now-start)/duration,1);
-    const ease=1-Math.pow(1-t,3);
-    el.textContent=(t*(target)).toFixed(decimals)+suffix;
-    if(t<1)requestAnimationFrame(step);
-    else el.textContent=target.toFixed(decimals)+suffix;
-  }
-  requestAnimationFrame(step);
-}
-function animAllCounters(root){
-  (root||document).querySelectorAll('[data-countup]').forEach(el=>{
-    const target=parseFloat(el.dataset.countup)||0;
-    const dec=parseInt(el.dataset.dec||'0');
-    const suf=el.dataset.suf||'';
-    const dur=parseInt(el.dataset.dur||'900');
-    animCountUp(el,target,dec,suf,dur);
-  });
-}
-
 // ═══════════════════════════════════════════════════════
-// SPLASH SCREEN
+// CRÉATEUR D'ÉLECTIONS — TEMPLATES & CANDIDATS
 // ═══════════════════════════════════════════════════════
-(function(){
-  var s=document.getElementById('splashScreen');
-  if(!s)return;
-  setTimeout(function(){
-    s.classList.add('gone');
-    setTimeout(function(){s.style.display='none';},520);
-  },3000);
-  s.addEventListener('click',function(){
-    s.classList.add('gone');
-    setTimeout(function(){s.style.display='none';},520);
+
+// Mapping département → région
+const DEPT_REGION={
+  '01':'Auvergne-Rhône-Alpes','02':'Hauts-de-France','03':'Auvergne-Rhône-Alpes','04':"Provence-Alpes-Côte d'Azur",'05':"Provence-Alpes-Côte d'Azur",
+  '06':"Provence-Alpes-Côte d'Azur",'07':'Auvergne-Rhône-Alpes','08':'Grand Est','09':'Occitanie','10':'Grand Est','11':'Occitanie','12':'Occitanie',
+  '13':"Provence-Alpes-Côte d'Azur",'14':'Normandie','15':'Auvergne-Rhône-Alpes','16':'Nouvelle-Aquitaine','17':'Nouvelle-Aquitaine','18':'Centre-Val de Loire',
+  '19':'Nouvelle-Aquitaine','2A':'Corse','2B':'Corse','21':'Bourgogne-Franche-Comté','22':'Bretagne','23':'Nouvelle-Aquitaine','24':'Nouvelle-Aquitaine',
+  '25':'Bourgogne-Franche-Comté','26':'Auvergne-Rhône-Alpes','27':'Normandie','28':'Centre-Val de Loire','29':'Bretagne','30':'Occitanie',
+  '31':'Occitanie','32':'Occitanie','33':'Nouvelle-Aquitaine','34':'Occitanie','35':'Bretagne','36':'Centre-Val de Loire','37':'Centre-Val de Loire',
+  '38':'Auvergne-Rhône-Alpes','39':'Bourgogne-Franche-Comté','40':'Nouvelle-Aquitaine','41':'Centre-Val de Loire','42':'Auvergne-Rhône-Alpes',
+  '43':'Auvergne-Rhône-Alpes','44':'Pays de la Loire','45':'Centre-Val de Loire','46':'Occitanie','47':'Nouvelle-Aquitaine','48':'Occitanie',
+  '49':'Pays de la Loire','50':'Normandie','51':'Grand Est','52':'Grand Est','53':'Pays de la Loire','54':'Grand Est','55':'Grand Est','56':'Bretagne',
+  '57':'Grand Est','58':'Bourgogne-Franche-Comté','59':'Hauts-de-France','60':'Hauts-de-France','61':'Normandie','62':'Hauts-de-France',
+  '63':'Auvergne-Rhône-Alpes','64':'Nouvelle-Aquitaine','65':'Occitanie','66':'Occitanie','67':'Grand Est','68':'Grand Est','69':'Auvergne-Rhône-Alpes',
+  '70':'Bourgogne-Franche-Comté','71':'Bourgogne-Franche-Comté','72':'Pays de la Loire','73':'Auvergne-Rhône-Alpes','74':'Auvergne-Rhône-Alpes',
+  '75':'Île-de-France','76':'Normandie','77':'Île-de-France','78':'Île-de-France','79':'Nouvelle-Aquitaine','80':'Hauts-de-France','81':'Occitanie',
+  '82':'Occitanie','83':"Provence-Alpes-Côte d'Azur",'84':"Provence-Alpes-Côte d'Azur",'85':'Pays de la Loire','86':'Nouvelle-Aquitaine',
+  '87':'Nouvelle-Aquitaine','88':'Grand Est','89':'Bourgogne-Franche-Comté','90':'Bourgogne-Franche-Comté','91':'Île-de-France','92':'Île-de-France',
+  '93':'Île-de-France','94':'Île-de-France','95':'Île-de-France',
+  '971':'Guadeloupe','972':'Martinique','973':'Guyane','974':'La Réunion','976':'Mayotte'
+};
+
+// Élections nationales disponibles (ordre d'affichage : MUN DEP REG LEG PRE EUR)
+const ELECTION_TEMPLATES=[
+  // ── Présidentielles ──────────────────────────────────
+  {type:'PRE',annee:2022,tours:[
+    {tour:'1',listes:[
+      {candidat:'Marine Le Pen',parti:'Rassemblement National',etiquette:'RN'},
+      {candidat:'Emmanuel Macron',parti:'Renaissance / LREM',etiquette:'REN'},
+      {candidat:'Jean-Luc Mélenchon',parti:'La France Insoumise',etiquette:'FI'},
+      {candidat:'Éric Zemmour',parti:'Reconquête !',etiquette:'REC'},
+      {candidat:'Valérie Pécresse',parti:'Les Républicains',etiquette:'LR'},
+      {candidat:'Yannick Jadot',parti:'Les Écologistes / EELV',etiquette:'ECO'},
+      {candidat:'Jean Lassalle',parti:'Résistons !',etiquette:'DIV'},
+      {candidat:'Fabien Roussel',parti:'Parti communiste',etiquette:'COM'},
+      {candidat:'Nicolas Dupont-Aignan',parti:'Debout la France',etiquette:'DSV'},
+      {candidat:'Anne Hidalgo',parti:'Parti socialiste',etiquette:'SOC'},
+      {candidat:'Philippe Poutou',parti:'NPA',etiquette:'EXG'},
+      {candidat:'Nathalie Arthaud',parti:'Lutte Ouvrière',etiquette:'LO'},
+    ]},
+    {tour:'2',listes:[
+      {candidat:'Emmanuel Macron',parti:'Renaissance / LREM',etiquette:'REN'},
+      {candidat:'Marine Le Pen',parti:'Rassemblement National',etiquette:'RN'},
+    ]},
+  ]},
+  {type:'PRE',annee:2017,tours:[
+    {tour:'1',listes:[
+      {candidat:'Emmanuel Macron',parti:'En Marche !',etiquette:'REN'},
+      {candidat:'Marine Le Pen',parti:'Front National',etiquette:'RN'},
+      {candidat:'François Fillon',parti:'Les Républicains',etiquette:'LR'},
+      {candidat:'Jean-Luc Mélenchon',parti:'La France Insoumise',etiquette:'FI'},
+      {candidat:'Benoît Hamon',parti:'Parti socialiste',etiquette:'SOC'},
+      {candidat:'Nicolas Dupont-Aignan',parti:'Debout la France',etiquette:'DSV'},
+      {candidat:'Jean Lassalle',parti:'Résistons !',etiquette:'DIV'},
+      {candidat:'Philippe Poutou',parti:'NPA',etiquette:'EXG'},
+      {candidat:'François Asselineau',parti:'UPR',etiquette:'DIV'},
+      {candidat:'Nathalie Arthaud',parti:'Lutte Ouvrière',etiquette:'LO'},
+      {candidat:'Jacques Cheminade',parti:'Solidarité et Progrès',etiquette:'DIV'},
+    ]},
+    {tour:'2',listes:[
+      {candidat:'Emmanuel Macron',parti:'En Marche !',etiquette:'REN'},
+      {candidat:'Marine Le Pen',parti:'Front National',etiquette:'RN'},
+    ]},
+  ]},
+  {type:'PRE',annee:2012,tours:[
+    {tour:'1',listes:[
+      {candidat:'François Hollande',parti:'Parti socialiste',etiquette:'SOC'},
+      {candidat:'Nicolas Sarkozy',parti:'UMP',etiquette:'LR'},
+      {candidat:'Marine Le Pen',parti:'Front National',etiquette:'RN'},
+      {candidat:'Jean-Luc Mélenchon',parti:'Front de Gauche',etiquette:'FI'},
+      {candidat:'François Bayrou',parti:'Mouvement Démocrate',etiquette:'MDM'},
+      {candidat:'Eva Joly',parti:'Europe Écologie',etiquette:'ECO'},
+      {candidat:'Nicolas Dupont-Aignan',parti:'Debout la France',etiquette:'DSV'},
+      {candidat:'Philippe Poutou',parti:'NPA',etiquette:'EXG'},
+      {candidat:'Nathalie Arthaud',parti:'Lutte Ouvrière',etiquette:'LO'},
+      {candidat:'Jacques Cheminade',parti:'Solidarité et Progrès',etiquette:'DIV'},
+    ]},
+    {tour:'2',listes:[
+      {candidat:'François Hollande',parti:'Parti socialiste',etiquette:'SOC'},
+      {candidat:'Nicolas Sarkozy',parti:'UMP',etiquette:'LR'},
+    ]},
+  ]},
+  {type:'PRE',annee:2007,tours:[
+    {tour:'1',listes:[
+      {candidat:'Nicolas Sarkozy',parti:'UMP',etiquette:'LR'},
+      {candidat:'Ségolène Royal',parti:'Parti socialiste',etiquette:'SOC'},
+      {candidat:'François Bayrou',parti:'UDF',etiquette:'MDM'},
+      {candidat:'Jean-Marie Le Pen',parti:'Front National',etiquette:'RN'},
+      {candidat:'Olivier Besancenot',parti:'LCR',etiquette:'EXG'},
+      {candidat:'Philippe de Villiers',parti:'MPF',etiquette:'DRA'},
+      {candidat:'Marie-George Buffet',parti:'PCF',etiquette:'COM'},
+      {candidat:'Dominique Voynet',parti:'Les Verts',etiquette:'ECO'},
+      {candidat:'Arlette Laguiller',parti:'Lutte Ouvrière',etiquette:'LO'},
+      {candidat:'José Bové',parti:'Altermondialiste',etiquette:'EXG'},
+      {candidat:'Frédéric Nihous',parti:'CPNT',etiquette:'DIV'},
+      {candidat:'Gérard Schivardi',parti:'PT',etiquette:'DIV'},
+    ]},
+    {tour:'2',listes:[
+      {candidat:'Nicolas Sarkozy',parti:'UMP',etiquette:'LR'},
+      {candidat:'Ségolène Royal',parti:'Parti socialiste',etiquette:'SOC'},
+    ]},
+  ]},
+  {type:'PRE',annee:2002,tours:[
+    {tour:'1',listes:[
+      {candidat:'Jacques Chirac',parti:'RPR',etiquette:'LR'},
+      {candidat:'Jean-Marie Le Pen',parti:'Front National',etiquette:'RN'},
+      {candidat:'Lionel Jospin',parti:'Parti socialiste',etiquette:'SOC'},
+      {candidat:'François Bayrou',parti:'UDF',etiquette:'MDM'},
+      {candidat:'Arlette Laguiller',parti:'Lutte Ouvrière',etiquette:'LO'},
+      {candidat:'Jean-Pierre Chevènement',parti:'MDC',etiquette:'DIV'},
+      {candidat:'Noël Mamère',parti:'Les Verts',etiquette:'ECO'},
+      {candidat:'Olivier Besancenot',parti:'LCR',etiquette:'EXG'},
+      {candidat:'Jean Saint-Josse',parti:'CPNT',etiquette:'DIV'},
+      {candidat:'Alain Madelin',parti:'DL',etiquette:'DTE'},
+      {candidat:'Robert Hue',parti:'PCF',etiquette:'COM'},
+      {candidat:'Bruno Mégret',parti:'MNR',etiquette:'EXD'},
+      {candidat:'Christiane Taubira',parti:'PRG',etiquette:'RDG'},
+      {candidat:'Corinne Lepage',parti:'CAP21',etiquette:'ECO'},
+      {candidat:'Christine Boutin',parti:'FRS',etiquette:'DTE'},
+      {candidat:'Daniel Gluckstein',parti:'PT',etiquette:'EXG'},
+    ]},
+    {tour:'2',listes:[
+      {candidat:'Jacques Chirac',parti:'RPR',etiquette:'LR'},
+      {candidat:'Jean-Marie Le Pen',parti:'Front National',etiquette:'RN'},
+    ]},
+  ]},
+
+  // ── Législatives ────────────────────────────────────
+  {type:'LEG',annee:2024,tours:[
+    {tour:'1',listes:[
+      {candidat:'(Candidat RN local)',parti:'Rassemblement National',etiquette:'RN'},
+      {candidat:'(Candidat NFP local)',parti:'Nouveau Front Populaire',etiquette:'UG'},
+      {candidat:'(Candidat Ensemble local)',parti:'Ensemble / Renaissance',etiquette:'REN'},
+      {candidat:'(Candidat LR local)',parti:'Les Républicains',etiquette:'LR'},
+      {candidat:'(Candidat divers)',parti:'',etiquette:'DIV'},
+    ]},
+    {tour:'2',listes:[
+      {candidat:'(Candidat élu)',parti:'',etiquette:'DIV'},
+      {candidat:'(Candidat 2)',parti:'',etiquette:'DIV'},
+    ]},
+  ]},
+  {type:'LEG',annee:2022,tours:[
+    {tour:'1',listes:[
+      {candidat:'(Candidat RN local)',parti:'Rassemblement National',etiquette:'RN'},
+      {candidat:'(Candidat NUPES local)',parti:'NUPES',etiquette:'UG'},
+      {candidat:'(Candidat Ensemble local)',parti:'Ensemble / Renaissance',etiquette:'REN'},
+      {candidat:'(Candidat LR local)',parti:'Les Républicains',etiquette:'LR'},
+      {candidat:'(Candidat divers)',parti:'',etiquette:'DIV'},
+    ]},
+    {tour:'2',listes:[
+      {candidat:'(Candidat élu)',parti:'',etiquette:'DIV'},
+      {candidat:'(Candidat 2)',parti:'',etiquette:'DIV'},
+    ]},
+  ]},
+  {type:'LEG',annee:2017,tours:[
+    {tour:'1',listes:[
+      {candidat:'(Candidat LREM local)',parti:'La République En Marche',etiquette:'REN'},
+      {candidat:'(Candidat FN local)',parti:'Front National',etiquette:'RN'},
+      {candidat:'(Candidat LR local)',parti:'Les Républicains',etiquette:'LR'},
+      {candidat:'(Candidat FI local)',parti:'La France Insoumise',etiquette:'FI'},
+      {candidat:'(Candidat PS local)',parti:'Parti socialiste',etiquette:'SOC'},
+      {candidat:'(Candidat divers)',parti:'',etiquette:'DIV'},
+    ]},
+    {tour:'2',listes:[
+      {candidat:'(Candidat élu)',parti:'',etiquette:'DIV'},
+      {candidat:'(Candidat 2)',parti:'',etiquette:'DIV'},
+    ]},
+  ]},
+
+  // ── Européennes ─────────────────────────────────────
+  {type:'EUR',annee:2024,tours:[
+    {tour:'U',listes:[
+      {candidat:'Jordan Bardella',parti:'Rassemblement National',etiquette:'RN'},
+      {candidat:'Valérie Hayer',parti:'Renaissance / Renew',etiquette:'REN'},
+      {candidat:'Raphaël Glucksmann',parti:'PS / Place Publique',etiquette:'PLP'},
+      {candidat:'Manon Aubry',parti:'La France Insoumise',etiquette:'FI'},
+      {candidat:'Marion Maréchal',parti:'Reconquête !',etiquette:'REC'},
+      {candidat:'François-Xavier Bellamy',parti:'Les Républicains',etiquette:'LR'},
+      {candidat:'Marie Toussaint',parti:'Les Écologistes / EELV',etiquette:'ECO'},
+      {candidat:'Léon Deffontaines',parti:'Parti communiste',etiquette:'COM'},
+      {candidat:'François Asselineau',parti:'UPR',etiquette:'DIV'},
+      {candidat:'Nathalie Arthaud',parti:'Lutte Ouvrière',etiquette:'LO'},
+    ]},
+  ]},
+  {type:'EUR',annee:2019,tours:[
+    {tour:'U',listes:[
+      {candidat:'Jordan Bardella',parti:'Rassemblement National',etiquette:'RN'},
+      {candidat:'Nathalie Loiseau',parti:'Renaissance (LREM)',etiquette:'REN'},
+      {candidat:'Yannick Jadot',parti:'Europe Écologie',etiquette:'ECO'},
+      {candidat:'François-Xavier Bellamy',parti:'Les Républicains',etiquette:'LR'},
+      {candidat:'Manon Aubry',parti:'La France Insoumise',etiquette:'FI'},
+      {candidat:'Raphaël Glucksmann',parti:'PS / PP',etiquette:'SOC'},
+      {candidat:'Ian Brossat',parti:'Parti communiste',etiquette:'COM'},
+      {candidat:'Nathalie Arthaud',parti:'Lutte Ouvrière',etiquette:'LO'},
+    ]},
+  ]},
+  {type:'EUR',annee:2014,tours:[
+    {tour:'U',listes:[
+      {candidat:'Aymeric Chauprade',parti:'Front National',etiquette:'RN'},
+      {candidat:'Françoise Grossetête',parti:'UMP / LR',etiquette:'LR'},
+      {candidat:'Pervenche Berès',parti:'Parti socialiste',etiquette:'SOC'},
+      {candidat:'José Bové',parti:'Europe Écologie',etiquette:'ECO'},
+      {candidat:'Jean-Luc Mélenchon',parti:'Front de Gauche',etiquette:'FI'},
+      {candidat:'Jean-Christophe Lagarde',parti:'UDI',etiquette:'UDI'},
+      {candidat:'Nathalie Arthaud',parti:'Lutte Ouvrière',etiquette:'LO'},
+    ]},
+  ]},
+
+  // ── Régionales (templates génériques — 2 tours) ──────
+  {type:'REG',annee:2021,tours:[
+    {tour:'1',listes:[
+      {candidat:'(Tête de liste gauche/NUPES)',parti:'Union de la Gauche',etiquette:'UG'},
+      {candidat:'(Tête de liste Ensemble)',parti:'Ensemble / LREM',etiquette:'REN'},
+      {candidat:'(Tête de liste RN)',parti:'Rassemblement National',etiquette:'RN'},
+      {candidat:'(Tête de liste LR)',parti:'Les Républicains',etiquette:'LR'},
+      {candidat:'(Tête de liste Écologistes)',parti:'EELV',etiquette:'ECO'},
+      {candidat:'(Divers)',parti:'',etiquette:'DIV'},
+    ]},
+    {tour:'2',listes:[
+      {candidat:'(Tête de liste fusionnée 1)',parti:'',etiquette:'DIV'},
+      {candidat:'(Tête de liste fusionnée 2)',parti:'',etiquette:'DIV'},
+      {candidat:'(Tête de liste fusionnée 3)',parti:'',etiquette:'DIV'},
+    ]},
+  ]},
+  {type:'REG',annee:2015,tours:[
+    {tour:'1',listes:[
+      {candidat:'(Tête de liste RN)',parti:'Front National',etiquette:'RN'},
+      {candidat:'(Tête de liste gauche)',parti:'Parti socialiste',etiquette:'SOC'},
+      {candidat:'(Tête de liste UMP/LR)',parti:'Les Républicains / UMP',etiquette:'LR'},
+      {candidat:'(Tête de liste FI/FdG)',parti:'Front de Gauche',etiquette:'FI'},
+      {candidat:'(Tête de liste EELV)',parti:'Europe Écologie',etiquette:'ECO'},
+      {candidat:'(Divers)',parti:'',etiquette:'DIV'},
+    ]},
+    {tour:'2',listes:[
+      {candidat:'(Tête de liste fusionnée 1)',parti:'',etiquette:'DIV'},
+      {candidat:'(Tête de liste fusionnée 2)',parti:'',etiquette:'DIV'},
+    ]},
+  ]},
+
+  // ── Départementales (templates génériques) ───────────
+  {type:'DEP',annee:2021,tours:[
+    {tour:'1',listes:[
+      {candidat:'(Binôme gauche)',parti:'Union de la Gauche',etiquette:'UG'},
+      {candidat:'(Binôme centre)',parti:'Ensemble / LREM',etiquette:'REN'},
+      {candidat:'(Binôme droite)',parti:'Les Républicains / Divers droite',etiquette:'UD'},
+      {candidat:'(Binôme RN)',parti:'Rassemblement National',etiquette:'RN'},
+      {candidat:'(Binôme divers)',parti:'',etiquette:'DIV'},
+    ]},
+    {tour:'2',listes:[
+      {candidat:'(Binôme élu)',parti:'',etiquette:'DIV'},
+      {candidat:'(Binôme 2)',parti:'',etiquette:'DIV'},
+    ]},
+  ]},
+  {type:'DEP',annee:2015,tours:[
+    {tour:'1',listes:[
+      {candidat:'(Binôme gauche)',parti:'Parti socialiste / Union gauche',etiquette:'UG'},
+      {candidat:'(Binôme droite)',parti:'UMP / LR / Divers droite',etiquette:'UD'},
+      {candidat:'(Binôme FN)',parti:'Front National',etiquette:'RN'},
+      {candidat:'(Binôme FdG)',parti:'Front de Gauche',etiquette:'FI'},
+      {candidat:'(Binôme divers)',parti:'',etiquette:'DIV'},
+    ]},
+    {tour:'2',listes:[
+      {candidat:'(Binôme élu)',parti:'',etiquette:'DIV'},
+      {candidat:'(Binôme 2)',parti:'',etiquette:'DIV'},
+    ]},
+  ]},
+
+  // ── Municipales (template générique) ─────────────────
+  {type:'MUN',annee:2020,tours:[
+    {tour:'1',listes:[
+      {candidat:'(Tête de liste 1)',parti:'',etiquette:'DIV'},
+      {candidat:'(Tête de liste 2)',parti:'',etiquette:'DIV'},
+      {candidat:'(Tête de liste 3)',parti:'',etiquette:'DIV'},
+    ]},
+    {tour:'2',listes:[
+      {candidat:'(Tête de liste élue)',parti:'',etiquette:'DIV'},
+      {candidat:'(Tête de liste 2)',parti:'',etiquette:'DIV'},
+    ]},
+  ]},
+  {type:'MUN',annee:2014,tours:[
+    {tour:'1',listes:[
+      {candidat:'(Tête de liste 1)',parti:'',etiquette:'DIV'},
+      {candidat:'(Tête de liste 2)',parti:'',etiquette:'DIV'},
+    ]},
+    {tour:'2',listes:[
+      {candidat:'(Tête de liste élue)',parti:'',etiquette:'DIV'},
+      {candidat:'(Tête de liste 2)',parti:'',etiquette:'DIV'},
+    ]},
+  ]},
+];
+
+// Ordre d'affichage des types
+const TYPE_ORDER_DISPLAY=['MUN','DEP','REG','PRE','LEG','EUR'];
+
+function getDeptCode(c){
+  if(!c.dept)return null;
+  return c.dept.split(' - ')[0].trim();
+}
+function getRegionFromCommune(c){
+  const d=getDeptCode(c);if(!d)return null;
+  return DEPT_REGION[d]||null;
+}
+
+function openCreateur(){
+  const c=getC();if(!c)return;
+  document.getElementById('crCommuneNom').textContent=c.nom;
+  const dept=c.dept||'Non renseigné';
+  document.getElementById('crDept').textContent=dept;
+  const region=getRegionFromCommune(c)||'Non renseigné';
+  document.getElementById('crRegion').textContent=region;
+
+  // Construire la liste des élections disponibles
+  const list=document.getElementById('crElectionsList');
+  list.innerHTML='';
+
+  // Trouver les scrutins déjà existants (type+annee+tour)
+  const existing=new Set((c.scrutins||[]).map(s=>s.type+'-'+s.annee+'-'+s.tour));
+
+  // Grouper les templates par type, dans l'ordre d'affichage
+  const byType={};
+  ELECTION_TEMPLATES.forEach(t=>{
+    if(!byType[t.type])byType[t.type]=[];
+    byType[t.type].push(t);
   });
-})();
+
+  TYPE_ORDER_DISPLAY.forEach(type=>{
+    const templates=byType[type];
+    if(!templates)return;
+    const typeColor=TYPE_COLORS[type];
+    const typeLabel=TYPE_LABELS[type];
+
+    // En-tête de section
+    const sec=document.createElement('div');
+    sec.style.cssText='margin-bottom:4px';
+    sec.innerHTML=`<div style="display:flex;align-items:center;gap:8px;padding:6px 0 4px;border-bottom:1px solid var(--border);margin-bottom:6px">
+      <span class="type-badge type-${type}">${typeLabel}</span>
+    </div>`;
+
+    const rows=document.createElement('div');
+    rows.style.cssText='display:flex;flex-direction:column;gap:5px;padding-left:6px';
+
+    templates.forEach(tmpl=>{
+      const missingTours=tmpl.tours.filter(t=>!existing.has(type+'-'+tmpl.annee+'-'+t.tour));
+      const allExist=missingTours.length===0;
+
+      const row=document.createElement('div');
+      row.style.cssText=`display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;background:${allExist?'var(--surface2)':'var(--surface)'};border:1px solid ${allExist?'var(--border)':'var(--border)'};`;
+
+      const toursDesc=tmpl.tours.map(t=>{
+        const done=existing.has(type+'-'+tmpl.annee+'-'+t.tour);
+        const tLabel=t.tour==='U'?'Tour unique':t.tour==='1'?'T1':'T2';
+        return `<span style="font-size:10px;padding:2px 7px;border-radius:4px;font-weight:600;background:${done?'#e6faf2':'var(--surface2)'};color:${done?'#1a7a50':'var(--muted2)'};border:1px solid ${done?'#a0d4b8':'var(--border)'}">${done?'✓ ':''}${tLabel}</span>`;
+      }).join('');
+
+      const candidatCount=tmpl.tours[0].listes.length;
+      row.innerHTML=`
+        <input type="checkbox" id="cr-${type}-${tmpl.annee}" ${allExist?'disabled':''} ${!allExist?'checked':''} style="width:16px;height:16px;cursor:${allExist?'not-allowed':'pointer'};accent-color:var(--accent)">
+        <label for="cr-${type}-${tmpl.annee}" style="flex:1;cursor:${allExist?'not-allowed':'pointer'}">
+          <span style="font-weight:700;font-size:13px">${tmpl.annee}</span>
+          <span style="font-size:11px;color:var(--muted);margin-left:6px">${candidatCount} candidat(e)s prérempli(e)s</span>
+        </label>
+        <div style="display:flex;gap:4px">${toursDesc}</div>
+        ${allExist?'<span style="font-size:10px;color:#1a7a50;font-weight:600;white-space:nowrap">Déjà créé</span>':''}`;
+
+      rows.appendChild(row);
+    });
+
+    sec.appendChild(rows);
+    list.appendChild(sec);
+  });
+
+  document.getElementById('modalCreateur').classList.add('open');
+}
+
+function applyCreateur(){
+  const c=getC();if(!c)return;
+  const existing=new Set((c.scrutins||[]).map(s=>s.type+'-'+s.annee+'-'+s.tour));
+  let added=0;
+
+  ELECTION_TEMPLATES.forEach(tmpl=>{
+    const cb=document.getElementById('cr-'+tmpl.type+'-'+tmpl.annee);
+    if(!cb||!cb.checked||cb.disabled)return;
+
+    tmpl.tours.forEach(tourData=>{
+      const key=tmpl.type+'-'+tmpl.annee+'-'+tourData.tour;
+      if(existing.has(key))return; // ne pas écraser
+      const sc={
+        type:tmpl.type,
+        annee:tmpl.annee,
+        tour:tourData.tour,
+        canton:null,
+        inscrits:0,votants:0,blancs:0,nuls:0,exprimes:0,
+        listes:tourData.listes.map(l=>({...l,voix:0}))
+      };
+      c.scrutins.push(sc);
+      existing.add(key);
+      added++;
+    });
+  });
+
+  // Trier les scrutins après ajout (ordre MUN DEP REG LEG PRE EUR puis annee puis tour)
+  const TORD={MUN:0,DEP:1,REG:2,PRE:3,LEG:4,EUR:5};
+  const TORD2={'1':0,'U':1,'2':2};
+  c.scrutins.sort((a,b)=>{
+    const td=(TORD[a.type]??9)-(TORD[b.type]??9);if(td!==0)return td;
+    if(a.annee!==b.annee)return a.annee-b.annee;
+    return (TORD2[a.tour]??0)-(TORD2[b.tour]??0);
+  });
+
+  closeModal('createur');
+  save();
+  renderMain();
+  showStatus(`✓ ${added} scrutin${added>1?'s':''} ajouté${added>1?'s':''}  (${c.scrutins.length} au total)`,'#1a7a50',4000);
+}
 
 // ═══════════════════════════════════════════════════════
 // CARTE
@@ -2202,6 +2634,44 @@ function updateCarteLegend(){
     </div>`;
   }
 }
+
+// ── Animations compteur ────────────────────────────────
+function animCountUp(el,target,decimals,suffix,duration){
+  if(!el)return;
+  const start=performance.now();
+  const from=0;
+  function step(now){
+    const t=Math.min((now-start)/duration,1);
+    const ease=1-Math.pow(1-t,3); // ease-out cubic
+    const val=from+(target-from)*ease;
+    el.textContent=val.toFixed(decimals)+suffix;
+    if(t<1)requestAnimationFrame(step);
+    else el.textContent=target.toFixed(decimals)+suffix;
+  }
+  requestAnimationFrame(step);
+}
+function animAllCounters(root){
+  (root||document).querySelectorAll('[data-countup]').forEach(el=>{
+    const target=parseFloat(el.dataset.countup)||0;
+    const dec=parseInt(el.dataset.dec||'0');
+    const suf=el.dataset.suf||'';
+    const dur=parseInt(el.dataset.dur||'900');
+    animCountUp(el,target,dec,suf,dur);
+  });
+}
+
+// ── Fermeture modals sur clic overlay ──────────────────
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+function exportData(){saveToFile();}
+
+// ── Splash screen ──────────────────────────────────────
+(function(){
+  var s=document.getElementById('splashScreen');
+  if(!s)return;
+  function dismiss(){s.classList.add('gone');setTimeout(function(){s.style.display='none';},520);}
+  setTimeout(dismiss,3000);
+  s.addEventListener('click',dismiss);
+})();
 
 init();
 </script>
