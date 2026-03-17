@@ -1868,12 +1868,21 @@ function updateServerBadge(){
 }
 async function init(){
   let loaded=false;
+  // Essayer de charger barometre-data.json (fonctionne en local et sur GitHub Pages)
   try{
-    const r=await fetch('barometre-data.json?_='+Date.now());
+    const r=await fetch('barometre-data.json?_='+Date.now(),{cache:'no-cache'});
     if(r.ok){const d=await r.json();if(d&&d.communes){state=d;loaded=true;}}
   }catch(e){}
   if(!loaded){
-    document.getElementById('mainContent').innerHTML='<div class="empty-state anim"><div class="icon">📂</div><p>Aucune donnée trouvée.<br><small style="color:var(--muted)">Placez barometre-data.json dans le même dossier.</small></p></div>';
+    document.getElementById('mainContent').innerHTML=`
+      <div class="empty-state anim" style="padding:60px 20px">
+        <div class="icon" style="font-size:48px;margin-bottom:16px">&#128202;</div>
+        <p style="font-size:16px;font-weight:700;margin-bottom:8px">Aucune donnée disponible</p>
+        <p style="font-size:13px;color:var(--muted);max-width:400px;margin:0 auto">
+          Le fichier <code style="font-family:'IBM Plex Mono',monospace;background:var(--surface2);padding:1px 6px;border-radius:3px">barometre-data.json</code>
+          est introuvable ou vide.
+        </p>
+      </div>`;
     return;
   }
   renderSidebar();
