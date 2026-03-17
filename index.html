@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Politomètre — Analyse politique des communes</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
-<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet">
-<link href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" rel="stylesheet"/>
-<link href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
 <style>
 :root{
   --bg:#f0f3fa;--surface:#ffffff;--surface2:#eef1f8;--border:#dde2ee;
@@ -67,9 +66,9 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .splash-dot:nth-child(3){animation-delay:.4s;}
 /* ── LAYOUT ─────────────────────────────────────────────── */
 header{
-  border-bottom:1px solid var(--border);padding:14px 26px;
-  display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;background:rgba(255,255,255,.92);z-index:100;
+  border-bottom:1px solid var(--border);padding:0 26px;
+  display:flex;flex-direction:column;
+  position:sticky;top:0;background:rgba(255,255,255,.95);z-index:100;
   backdrop-filter:blur(10px);box-shadow:var(--shadow-sm);
 }
 .logo{font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--muted2);}
@@ -373,151 +372,176 @@ header{
 }
 #mapContainer{width:100%;height:100%;border-radius:16px;overflow:hidden;}
 </style>
-</link></head>
+</head>
 <body>
+
 <!-- SPLASH SCREEN -->
 <div id="splashScreen">
-<div class="splash-logo">
-<div class="splash-logo-name"><span>POLITO</span>MÈTRE</div>
-<div class="splash-logo-sub">Mesurez la trajectoire politique de votre ville</div>
+  <div class="splash-logo">
+    <div class="splash-logo-name"><span>POLITO</span>MÈTRE</div>
+    <div class="splash-logo-sub">Mesurez la trajectoire politique de votre ville</div>
+  </div>
+  <div class="splash-dots">
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+  </div>
 </div>
-<div class="splash-dots">
-<div class="splash-dot"></div>
-<div class="splash-dot"></div>
-<div class="splash-dot"></div>
-</div>
-</div>
-<header>
-<div style="display:flex;flex-direction:column;gap:2px">
-<div class="logo"><span style="color:var(--accent)">POLITO</span>MÈTRE</div>
-<div style="font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.04em">Mesurez la trajectoire politique de votre ville</div>
-</div><div class="main-menu" style="display: flex; align-items: center; gap: 20px;"><a href="#" style="text-decoration: none; color: var(--text); font-weight: 500;">Accueil</a><div style="position: relative;"><input placeholder="Recherchez votre commune" style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 4px; width: 200px;" type="text"/></div><a href="#" style="text-decoration: none; color: var(--text); font-weight: 500;">Carte</a><a href="#" style="text-decoration: none; color: var(--text); font-weight: 500;">Comparateur de communes</a></div>
-<div><span id="saveStatus" style="display:none"></span></div>
+
+<header style="padding:0 28px;flex-direction:column;gap:0;height:auto">
+  <!-- Ligne 1 : logo + slogan + sauvegarde -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0 0">
+    <div style="display:flex;flex-direction:column;gap:1px">
+      <div class="logo"><span style="color:var(--accent)">POLITO</span>MÈTRE</div>
+      <div style="font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.04em">Mesurez la trajectoire politique de votre ville</div>
+    </div>
+    <div id="pubNavCrumb" style="display:none;align-items:center;gap:8px;font-size:13px;color:var(--muted)">
+      <span style="color:var(--border)">›</span>
+      <span id="pubNavCrumbName" style="font-weight:700;color:var(--text)"></span>
+      <button onclick="showPublicHome()" style="background:none;border:none;font-size:13px;color:var(--muted);cursor:pointer;padding:2px 8px;border-radius:5px" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='none'">×</button>
+    </div>
+    <span id="saveStatus" style="display:none"></span>
+  </div>
+  <!-- Ligne 2 : nav intégrée -->
+  <nav style="display:flex;align-items:center;gap:0;margin:0 -28px;padding:0 28px;border-top:1px solid var(--border);margin-top:6px;overflow-x:auto">
+    <button onclick="showPublicHome()" class="pub-nav-btn" id="pubNavHome">Accueil</button>
+    <div style="width:1px;height:20px;background:var(--border);margin:0 6px;flex-shrink:0"></div>
+    <div style="position:relative;display:flex;align-items:center;flex:1;max-width:320px;margin:4px 10px">
+      <svg style="position:absolute;left:11px;width:14px;height:14px;color:var(--muted);pointer-events:none;opacity:.55" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m14 14 3 3"/></svg>
+      <input type="text" id="pubHeaderSearch" placeholder="Recherchez votre commune"
+        oninput="pubHeaderSearchHandler(this.value)"
+        onfocus="this.style.borderColor='var(--accent)';this.style.boxShadow='0 0 0 3px rgba(42,79,212,.1)';document.getElementById('pubHeaderSuggest').style.display='block'"
+        onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none';setTimeout(()=>{const s=document.getElementById('pubHeaderSuggest');if(s)s.style.display='none';},200)"
+        style="width:100%;padding:7px 12px 7px 33px;border-radius:20px;border:1.5px solid var(--border);font-family:'Outfit',sans-serif;font-size:12.5px;background:var(--surface2);transition:border-color .15s,box-shadow .15s;outline:none">
+      <div id="pubHeaderSuggest" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);z-index:500;max-height:240px;overflow-y:auto"></div>
+    </div>
+    <div style="width:1px;height:20px;background:var(--border);margin:0 6px;flex-shrink:0"></div>
+    <button onclick="showCarteView()" class="pub-nav-btn" id="pubNavCarte">Carte</button>
+    <button onclick="showPublicComparateur()" class="pub-nav-btn" id="pubNavCompare">Comparateur de communes</button>
+    <button onclick="showMethodoPage()" class="pub-nav-btn" id="pubNavMethodo">Détails & Méthodologie</button>
+  </nav>
 </header>
-<!-- NAV HORIZONTALE PUBLIQUE -->
-<nav id="pubNav" style="background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;gap:0;overflow-x:auto">
-<button class="pub-nav-btn" id="pubNavHome" onclick="showPublicHome()">🏠 Accueil</button>
-<button class="pub-nav-btn" id="pubNavSearch" onclick="showPublicSearch()">🔍 Communes</button>
-<button class="pub-nav-btn" id="pubNavCompare" onclick="showPublicComparateur()">⇄ Comparer</button>
-<button class="pub-nav-btn" id="pubNavCarte" onclick="showCarteView()">🗺 Carte</button>
-<!-- Fil d'Ariane commune sélectionnée -->
-<div id="pubNavCrumb" style="margin-left:auto;display:none;align-items:center;gap:8px;font-size:12px;color:var(--muted)">
-<span style="color:var(--border)">›</span>
-<span id="pubNavCrumbName" style="font-weight:700;color:var(--text)"></span>
-<button onclick="showPublicHome()" onmouseout="this.style.background='none'" onmouseover="this.style.background='var(--surface2)'" style="background:none;border:none;font-size:11px;color:var(--muted);cursor:pointer;padding:2px 6px;border-radius:4px">×</button>
-</div>
-</nav>
+
 <!-- LISTE COMMUNES CACHÉE (maintenue pour compatibilité JS) -->
 <div style="display:none"><aside class="sidebar" id="pubSidebarHidden">
-<ul class="commune-list" id="communeList"></ul>
-<div id="bureauxSection"><ul class="bureau-list" id="bureauList"></ul></div>
+  <ul class="commune-list" id="communeList"></ul>
+  <div id="bureauxSection"><ul class="bureau-list" id="bureauList"></ul></div>
 </aside></div>
-<main class="main" id="mainContent" style="max-height:calc(100vh - 106px);padding:28px 36px">
-<div class="empty-state anim"><div class="icon">🗳</div><p>Chargement…</p></div>
+
+<main class="main" id="mainContent" style="max-height:calc(100vh - 120px);padding:28px 36px">
+  <div class="empty-state anim"><div class="icon">🗳</div><p>Chargement…</p></div>
 </main>
+
 <!-- MODAL COMMUNE -->
 <div class="modal-overlay" id="modalCommune">
-<div class="modal">
-<h2 id="mCommuneTitle">Nouvelle commune</h2>
-<p class="subtitle" id="mCommuneSub">Référencer une commune à suivre</p>
-<div class="fg-grid c2">
-<div class="fg"><label>Nom</label><input id="iCNom" placeholder="Saint-Maixent-l'École" type="text"/></div>
-<div class="fg"><label>Code INSEE</label><input id="iCInsee" maxlength="5" placeholder="79270" type="text"/></div>
+  <div class="modal">
+    <h2 id="mCommuneTitle">Nouvelle commune</h2>
+    <p class="subtitle" id="mCommuneSub">Référencer une commune à suivre</p>
+    <div class="fg-grid c2">
+      <div class="fg"><label>Nom</label><input type="text" id="iCNom" placeholder="Saint-Maixent-l'École"></div>
+      <div class="fg"><label>Code INSEE</label><input type="text" id="iCInsee" placeholder="79270" maxlength="5"></div>
+    </div>
+    <div class="fg-grid c2">
+      <div class="fg">
+        <label>Département</label>
+        <select id="iCDept">
+          <option value="">— Sélectionner —</option>
+          <option value="01 - Ain">01 - Ain</option><option value="02 - Aisne">02 - Aisne</option><option value="03 - Allier">03 - Allier</option><option value="04 - Alpes-de-Haute-Provence">04 - Alpes-de-Haute-Provence</option><option value="05 - Hautes-Alpes">05 - Hautes-Alpes</option><option value="06 - Alpes-Maritimes">06 - Alpes-Maritimes</option><option value="07 - Ardèche">07 - Ardèche</option><option value="08 - Ardennes">08 - Ardennes</option><option value="09 - Ariège">09 - Ariège</option><option value="10 - Aube">10 - Aube</option><option value="11 - Aude">11 - Aude</option><option value="12 - Aveyron">12 - Aveyron</option><option value="13 - Bouches-du-Rhône">13 - Bouches-du-Rhône</option><option value="14 - Calvados">14 - Calvados</option><option value="15 - Cantal">15 - Cantal</option><option value="16 - Charente">16 - Charente</option><option value="17 - Charente-Maritime">17 - Charente-Maritime</option><option value="18 - Cher">18 - Cher</option><option value="19 - Corrèze">19 - Corrèze</option><option value="2A - Corse-du-Sud">2A - Corse-du-Sud</option><option value="2B - Haute-Corse">2B - Haute-Corse</option><option value="21 - Côte-d'Or">21 - Côte-d'Or</option><option value="22 - Côtes-d'Armor">22 - Côtes-d'Armor</option><option value="23 - Creuse">23 - Creuse</option><option value="24 - Dordogne">24 - Dordogne</option><option value="25 - Doubs">25 - Doubs</option><option value="26 - Drôme">26 - Drôme</option><option value="27 - Eure">27 - Eure</option><option value="28 - Eure-et-Loir">28 - Eure-et-Loir</option><option value="29 - Finistère">29 - Finistère</option><option value="30 - Gard">30 - Gard</option><option value="31 - Haute-Garonne">31 - Haute-Garonne</option><option value="32 - Gers">32 - Gers</option><option value="33 - Gironde">33 - Gironde</option><option value="34 - Hérault">34 - Hérault</option><option value="35 - Ille-et-Vilaine">35 - Ille-et-Vilaine</option><option value="36 - Indre">36 - Indre</option><option value="37 - Indre-et-Loire">37 - Indre-et-Loire</option><option value="38 - Isère">38 - Isère</option><option value="39 - Jura">39 - Jura</option><option value="40 - Landes">40 - Landes</option><option value="41 - Loir-et-Cher">41 - Loir-et-Cher</option><option value="42 - Loire">42 - Loire</option><option value="43 - Haute-Loire">43 - Haute-Loire</option><option value="44 - Loire-Atlantique">44 - Loire-Atlantique</option><option value="45 - Loiret">45 - Loiret</option><option value="46 - Lot">46 - Lot</option><option value="47 - Lot-et-Garonne">47 - Lot-et-Garonne</option><option value="48 - Lozère">48 - Lozère</option><option value="49 - Maine-et-Loire">49 - Maine-et-Loire</option><option value="50 - Manche">50 - Manche</option><option value="51 - Marne">51 - Marne</option><option value="52 - Haute-Marne">52 - Haute-Marne</option><option value="53 - Mayenne">53 - Mayenne</option><option value="54 - Meurthe-et-Moselle">54 - Meurthe-et-Moselle</option><option value="55 - Meuse">55 - Meuse</option><option value="56 - Morbihan">56 - Morbihan</option><option value="57 - Moselle">57 - Moselle</option><option value="58 - Nièvre">58 - Nièvre</option><option value="59 - Nord">59 - Nord</option><option value="60 - Oise">60 - Oise</option><option value="61 - Orne">61 - Orne</option><option value="62 - Pas-de-Calais">62 - Pas-de-Calais</option><option value="63 - Puy-de-Dôme">63 - Puy-de-Dôme</option><option value="64 - Pyrénées-Atlantiques">64 - Pyrénées-Atlantiques</option><option value="65 - Hautes-Pyrénées">65 - Hautes-Pyrénées</option><option value="66 - Pyrénées-Orientales">66 - Pyrénées-Orientales</option><option value="67 - Bas-Rhin">67 - Bas-Rhin</option><option value="68 - Haut-Rhin">68 - Haut-Rhin</option><option value="69 - Rhône">69 - Rhône</option><option value="70 - Haute-Saône">70 - Haute-Saône</option><option value="71 - Saône-et-Loire">71 - Saône-et-Loire</option><option value="72 - Sarthe">72 - Sarthe</option><option value="73 - Savoie">73 - Savoie</option><option value="74 - Haute-Savoie">74 - Haute-Savoie</option><option value="75 - Paris">75 - Paris</option><option value="76 - Seine-Maritime">76 - Seine-Maritime</option><option value="77 - Seine-et-Marne">77 - Seine-et-Marne</option><option value="78 - Yvelines">78 - Yvelines</option><option value="79 - Deux-Sèvres">79 - Deux-Sèvres</option><option value="80 - Somme">80 - Somme</option><option value="81 - Tarn">81 - Tarn</option><option value="82 - Tarn-et-Garonne">82 - Tarn-et-Garonne</option><option value="83 - Var">83 - Var</option><option value="84 - Vaucluse">84 - Vaucluse</option><option value="85 - Vendée">85 - Vendée</option><option value="86 - Vienne">86 - Vienne</option><option value="87 - Haute-Vienne">87 - Haute-Vienne</option><option value="88 - Vosges">88 - Vosges</option><option value="89 - Yonne">89 - Yonne</option><option value="90 - Territoire de Belfort">90 - Territoire de Belfort</option><option value="91 - Essonne">91 - Essonne</option><option value="92 - Hauts-de-Seine">92 - Hauts-de-Seine</option><option value="93 - Seine-Saint-Denis">93 - Seine-Saint-Denis</option><option value="94 - Val-de-Marne">94 - Val-de-Marne</option><option value="95 - Val-d'Oise">95 - Val-d'Oise</option>
+          <optgroup label="─ DOM-TOM ─">
+          <option value="971 - Guadeloupe">971 - Guadeloupe</option><option value="972 - Martinique">972 - Martinique</option><option value="973 - Guyane">973 - Guyane</option><option value="974 - La Réunion">974 - La Réunion</option><option value="976 - Mayotte">976 - Mayotte</option><option value="975 - Saint-Pierre-et-Miquelon">975 - Saint-Pierre-et-Miquelon</option><option value="987 - Polynésie française">987 - Polynésie française</option><option value="988 - Nouvelle-Calédonie">988 - Nouvelle-Calédonie</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="fg"><label>Population</label><input type="number" id="iCPop" placeholder="6500"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('commune')">Annuler</button>
+      <button class="btn btn-primary" id="btnSaveCommune" onclick="saveCommune()">Ajouter</button>
+    </div>
+  </div>
 </div>
-<div class="fg-grid c2">
-<div class="fg">
-<label>Département</label>
-<select id="iCDept">
-<option value="">— Sélectionner —</option>
-<option value="01 - Ain">01 - Ain</option><option value="02 - Aisne">02 - Aisne</option><option value="03 - Allier">03 - Allier</option><option value="04 - Alpes-de-Haute-Provence">04 - Alpes-de-Haute-Provence</option><option value="05 - Hautes-Alpes">05 - Hautes-Alpes</option><option value="06 - Alpes-Maritimes">06 - Alpes-Maritimes</option><option value="07 - Ardèche">07 - Ardèche</option><option value="08 - Ardennes">08 - Ardennes</option><option value="09 - Ariège">09 - Ariège</option><option value="10 - Aube">10 - Aube</option><option value="11 - Aude">11 - Aude</option><option value="12 - Aveyron">12 - Aveyron</option><option value="13 - Bouches-du-Rhône">13 - Bouches-du-Rhône</option><option value="14 - Calvados">14 - Calvados</option><option value="15 - Cantal">15 - Cantal</option><option value="16 - Charente">16 - Charente</option><option value="17 - Charente-Maritime">17 - Charente-Maritime</option><option value="18 - Cher">18 - Cher</option><option value="19 - Corrèze">19 - Corrèze</option><option value="2A - Corse-du-Sud">2A - Corse-du-Sud</option><option value="2B - Haute-Corse">2B - Haute-Corse</option><option value="21 - Côte-d'Or">21 - Côte-d'Or</option><option value="22 - Côtes-d'Armor">22 - Côtes-d'Armor</option><option value="23 - Creuse">23 - Creuse</option><option value="24 - Dordogne">24 - Dordogne</option><option value="25 - Doubs">25 - Doubs</option><option value="26 - Drôme">26 - Drôme</option><option value="27 - Eure">27 - Eure</option><option value="28 - Eure-et-Loir">28 - Eure-et-Loir</option><option value="29 - Finistère">29 - Finistère</option><option value="30 - Gard">30 - Gard</option><option value="31 - Haute-Garonne">31 - Haute-Garonne</option><option value="32 - Gers">32 - Gers</option><option value="33 - Gironde">33 - Gironde</option><option value="34 - Hérault">34 - Hérault</option><option value="35 - Ille-et-Vilaine">35 - Ille-et-Vilaine</option><option value="36 - Indre">36 - Indre</option><option value="37 - Indre-et-Loire">37 - Indre-et-Loire</option><option value="38 - Isère">38 - Isère</option><option value="39 - Jura">39 - Jura</option><option value="40 - Landes">40 - Landes</option><option value="41 - Loir-et-Cher">41 - Loir-et-Cher</option><option value="42 - Loire">42 - Loire</option><option value="43 - Haute-Loire">43 - Haute-Loire</option><option value="44 - Loire-Atlantique">44 - Loire-Atlantique</option><option value="45 - Loiret">45 - Loiret</option><option value="46 - Lot">46 - Lot</option><option value="47 - Lot-et-Garonne">47 - Lot-et-Garonne</option><option value="48 - Lozère">48 - Lozère</option><option value="49 - Maine-et-Loire">49 - Maine-et-Loire</option><option value="50 - Manche">50 - Manche</option><option value="51 - Marne">51 - Marne</option><option value="52 - Haute-Marne">52 - Haute-Marne</option><option value="53 - Mayenne">53 - Mayenne</option><option value="54 - Meurthe-et-Moselle">54 - Meurthe-et-Moselle</option><option value="55 - Meuse">55 - Meuse</option><option value="56 - Morbihan">56 - Morbihan</option><option value="57 - Moselle">57 - Moselle</option><option value="58 - Nièvre">58 - Nièvre</option><option value="59 - Nord">59 - Nord</option><option value="60 - Oise">60 - Oise</option><option value="61 - Orne">61 - Orne</option><option value="62 - Pas-de-Calais">62 - Pas-de-Calais</option><option value="63 - Puy-de-Dôme">63 - Puy-de-Dôme</option><option value="64 - Pyrénées-Atlantiques">64 - Pyrénées-Atlantiques</option><option value="65 - Hautes-Pyrénées">65 - Hautes-Pyrénées</option><option value="66 - Pyrénées-Orientales">66 - Pyrénées-Orientales</option><option value="67 - Bas-Rhin">67 - Bas-Rhin</option><option value="68 - Haut-Rhin">68 - Haut-Rhin</option><option value="69 - Rhône">69 - Rhône</option><option value="70 - Haute-Saône">70 - Haute-Saône</option><option value="71 - Saône-et-Loire">71 - Saône-et-Loire</option><option value="72 - Sarthe">72 - Sarthe</option><option value="73 - Savoie">73 - Savoie</option><option value="74 - Haute-Savoie">74 - Haute-Savoie</option><option value="75 - Paris">75 - Paris</option><option value="76 - Seine-Maritime">76 - Seine-Maritime</option><option value="77 - Seine-et-Marne">77 - Seine-et-Marne</option><option value="78 - Yvelines">78 - Yvelines</option><option value="79 - Deux-Sèvres">79 - Deux-Sèvres</option><option value="80 - Somme">80 - Somme</option><option value="81 - Tarn">81 - Tarn</option><option value="82 - Tarn-et-Garonne">82 - Tarn-et-Garonne</option><option value="83 - Var">83 - Var</option><option value="84 - Vaucluse">84 - Vaucluse</option><option value="85 - Vendée">85 - Vendée</option><option value="86 - Vienne">86 - Vienne</option><option value="87 - Haute-Vienne">87 - Haute-Vienne</option><option value="88 - Vosges">88 - Vosges</option><option value="89 - Yonne">89 - Yonne</option><option value="90 - Territoire de Belfort">90 - Territoire de Belfort</option><option value="91 - Essonne">91 - Essonne</option><option value="92 - Hauts-de-Seine">92 - Hauts-de-Seine</option><option value="93 - Seine-Saint-Denis">93 - Seine-Saint-Denis</option><option value="94 - Val-de-Marne">94 - Val-de-Marne</option><option value="95 - Val-d'Oise">95 - Val-d'Oise</option>
-<optgroup label="─ DOM-TOM ─">
-<option value="971 - Guadeloupe">971 - Guadeloupe</option><option value="972 - Martinique">972 - Martinique</option><option value="973 - Guyane">973 - Guyane</option><option value="974 - La Réunion">974 - La Réunion</option><option value="976 - Mayotte">976 - Mayotte</option><option value="975 - Saint-Pierre-et-Miquelon">975 - Saint-Pierre-et-Miquelon</option><option value="987 - Polynésie française">987 - Polynésie française</option><option value="988 - Nouvelle-Calédonie">988 - Nouvelle-Calédonie</option>
-</optgroup>
-</select>
-</div>
-<div class="fg"><label>Population</label><input id="iCPop" placeholder="6500" type="number"/></div>
-</div>
-<div class="modal-actions">
-<button class="btn btn-ghost" onclick="closeModal('commune')">Annuler</button>
-<button class="btn btn-primary" id="btnSaveCommune" onclick="saveCommune()">Ajouter</button>
-</div>
-</div>
-</div>
+
 <!-- MODAL BUREAU -->
 <div class="modal-overlay" id="modalBureau">
-<div class="modal">
-<h2 id="mBureauTitle">Nouveau bureau de vote</h2><p class="subtitle" id="mBureauSub"></p>
-<div class="fg-grid c2">
-<div class="fg"><label>Numéro</label><input id="iBNum" placeholder="1" type="text"/></div>
-<div class="fg"><label>Libellé / Lieu</label><input id="iBLabel" placeholder="Salle des fêtes" type="text"/></div>
+  <div class="modal">
+    <h2 id="mBureauTitle">Nouveau bureau de vote</h2><p class="subtitle" id="mBureauSub"></p>
+    <div class="fg-grid c2">
+      <div class="fg"><label>Numéro</label><input type="text" id="iBNum" placeholder="1"></div>
+      <div class="fg"><label>Libellé / Lieu</label><input type="text" id="iBLabel" placeholder="Salle des fêtes"></div>
+    </div>
+    <div class="fg-grid"><div class="fg"><label>Inscrits</label><input type="number" id="iBInscrits" placeholder="450"></div></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('bureau')">Annuler</button>
+      <button class="btn btn-primary" id="btnSaveBureau" onclick="saveBureau()">Ajouter</button>
+    </div>
+  </div>
 </div>
-<div class="fg-grid"><div class="fg"><label>Inscrits</label><input id="iBInscrits" placeholder="450" type="number"/></div></div>
-<div class="modal-actions">
-<button class="btn btn-ghost" onclick="closeModal('bureau')">Annuler</button>
-<button class="btn btn-primary" id="btnSaveBureau" onclick="saveBureau()">Ajouter</button>
-</div>
-</div>
-</div>
+
 <!-- MODAL CRÉATEUR D'ÉLECTIONS -->
 <div class="modal-overlay" id="modalCreateur">
-<div class="modal" style="width:720px">
-<h2>Créateur d'élections</h2>
-<p class="subtitle">Générez des scrutins pré-remplis pour une commune. Vous pourrez ensuite les modifier individuellement.</p>
-<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:12px;color:var(--muted2)">
-<b>Commune :</b> <span id="crCommuneNom">—</span>  · 
-      <b>Département :</b> <span id="crDept">—</span>  · 
+  <div class="modal" style="width:720px">
+    <h2>Créateur d'élections</h2>
+    <p class="subtitle">Générez des scrutins pré-remplis pour une commune. Vous pourrez ensuite les modifier individuellement.</p>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:12px;color:var(--muted2)">
+      <b>Commune :</b> <span id="crCommuneNom">—</span> &nbsp;·&nbsp;
+      <b>Département :</b> <span id="crDept">—</span> &nbsp;·&nbsp;
       <b>Région :</b> <span id="crRegion">—</span>
-</div>
-<div style="margin-bottom:14px">
-<div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Sélectionnez les élections à créer</div>
-<div id="crElectionsList" style="display:flex;flex-direction:column;gap:8px"></div>
-</div>
-<div style="background:#fff8e6;border:1px solid #e0c88a;border-radius:8px;padding:10px 14px;font-size:11px;color:#7a5a10;margin-bottom:16px">
+    </div>
+
+    <div style="margin-bottom:14px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Sélectionnez les élections à créer</div>
+      <div id="crElectionsList" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+
+    <div style="background:#fff8e6;border:1px solid #e0c88a;border-radius:8px;padding:10px 14px;font-size:11px;color:#7a5a10;margin-bottom:16px">
       ⚠ Les scrutins déjà existants pour cette commune ne seront <b>pas écrasés</b>. Seuls les scrutins manquants seront ajoutés.
     </div>
-<div class="modal-actions">
-<button class="btn btn-ghost" onclick="closeModal('createur')">Annuler</button>
-<button class="btn btn-primary" onclick="applyCreateur()">✦ Créer les scrutins sélectionnés</button>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('createur')">Annuler</button>
+      <button class="btn btn-primary" onclick="applyCreateur()">✦ Créer les scrutins sélectionnés</button>
+    </div>
+  </div>
 </div>
-</div>
-</div>
+
 <!-- MODAL SCRUTIN -->
 <div class="modal-overlay" id="modalScrutin">
-<div class="modal">
-<h2 id="mScrutinTitle">Saisir un scrutin</h2><p class="subtitle" id="mScrutinSub"></p>
-<div class="fg-grid c3">
-<div class="fg"><label>Type</label>
-<select id="iSType" onchange="updateTourOptions()"><option value="MUN">Municipales</option><option value="LEG">Législatives</option><option value="PRE">Présidentielles</option><option value="EUR">Européennes</option><option value="REG">Régionales</option><option value="DEP">Départementales</option></select>
+  <div class="modal">
+    <h2 id="mScrutinTitle">Saisir un scrutin</h2><p class="subtitle" id="mScrutinSub"></p>
+    <div class="fg-grid c3">
+      <div class="fg"><label>Type</label>
+        <select id="iSType" onchange="updateTourOptions()"><option value="MUN">Municipales</option><option value="LEG">Législatives</option><option value="PRE">Présidentielles</option><option value="EUR">Européennes</option><option value="REG">Régionales</option><option value="DEP">Départementales</option></select>
+      </div>
+      <div class="fg"><label>Année</label><input type="number" id="iSAnnee" placeholder="2026" min="1945" max="2060"></div>
+      <div class="fg"><label>Tour</label>
+        <select id="iSTour"><option value="1">1er tour</option><option value="2">2nd tour</option><option value="U">Tour unique</option></select>
+      </div>
+    </div>
+    <div class="fg-grid c4">
+      <div class="fg"><label>Inscrits</label><input type="number" id="iSInscrits"></div>
+      <div class="fg"><label>Votants</label><input type="number" id="iSVotants"></div>
+      <div class="fg"><label>Blancs</label><input type="number" id="iSBlancs" placeholder="0"></div>
+      <div class="fg"><label>Nuls</label><input type="number" id="iSNuls" placeholder="0"></div>
+    </div>
+    <div id="cantonField" style="display:none" class="fg-grid"><div class="fg"><label>Canton <span style="font-weight:400;text-transform:none;letter-spacing:0">(facultatif — si commune multi-cantons)</span></label><input type="text" id="iSCanton" placeholder="Ex : Canton de Niort-1"></div></div>
+    <div class="fg-grid"><div class="fg"><label>Exprimés (auto-calculé)</label><input type="number" id="iSExprimes"></div></div>
+    <div class="sec">
+      <div class="sec-hdr">
+        <span>Candidats</span>
+        <button class="btn btn-ghost btn-sm" onclick="addListeRow()">+ Ajouter</button>
+      </div>
+      <div id="listesEditor"></div>
+      <div style="margin-top:6px">
+        <button class="btn btn-ghost btn-sm" onclick="addListeRow()" style="width:100%;border-style:dashed">+ Ajouter un candidat</button>
+      </div>
+    </div>
+    <div class="modal-actions" style="position:sticky;bottom:0;background:var(--surface);padding-top:10px;border-top:1px solid var(--border);">
+      <button class="btn btn-ghost" onclick="closeModal('scrutin')">Annuler</button>
+      <button class="btn btn-primary" id="btnSaveScrutin" onclick="saveScrutin()">Enregistrer</button>
+    </div>
+  </div>
 </div>
-<div class="fg"><label>Année</label><input id="iSAnnee" max="2060" min="1945" placeholder="2026" type="number"/></div>
-<div class="fg"><label>Tour</label>
-<select id="iSTour"><option value="1">1er tour</option><option value="2">2nd tour</option><option value="U">Tour unique</option></select>
-</div>
-</div>
-<div class="fg-grid c4">
-<div class="fg"><label>Inscrits</label><input id="iSInscrits" type="number"/></div>
-<div class="fg"><label>Votants</label><input id="iSVotants" type="number"/></div>
-<div class="fg"><label>Blancs</label><input id="iSBlancs" placeholder="0" type="number"/></div>
-<div class="fg"><label>Nuls</label><input id="iSNuls" placeholder="0" type="number"/></div>
-</div>
-<div class="fg-grid" id="cantonField" style="display:none"><div class="fg"><label>Canton <span style="font-weight:400;text-transform:none;letter-spacing:0">(facultatif — si commune multi-cantons)</span></label><input id="iSCanton" placeholder="Ex : Canton de Niort-1" type="text"/></div></div>
-<div class="fg-grid"><div class="fg"><label>Exprimés (auto-calculé)</label><input id="iSExprimes" type="number"/></div></div>
-<div class="sec">
-<div class="sec-hdr">
-<span>Candidats</span>
-<button class="btn btn-ghost btn-sm" onclick="addListeRow()">+ Ajouter</button>
-</div>
-<div id="listesEditor"></div>
-<div style="margin-top:6px">
-<button class="btn btn-ghost btn-sm" onclick="addListeRow()" style="width:100%;border-style:dashed">+ Ajouter un candidat</button>
-</div>
-</div>
-<div class="modal-actions" style="position:sticky;bottom:0;background:var(--surface);padding-top:10px;border-top:1px solid var(--border);">
-<button class="btn btn-ghost" onclick="closeModal('scrutin')">Annuler</button>
-<button class="btn btn-primary" id="btnSaveScrutin" onclick="saveScrutin()">Enregistrer</button>
-</div>
-</div>
-</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
@@ -1006,37 +1030,42 @@ function renderTabParticipation(){
     const wrap=document.createElement('div');
     filtered.forEach(s=>{
       const ins=s.inscrits,vot=s.votants,blancs=s.blancs||0,nuls=s.nuls||0;
-      const partPct=ins?(vot/ins*100):0;
-      const abstPct=100-partPct;
-      const blancPct=vot?(blancs/vot*100):0;
-      const nulPct=vot?(nuls/vot*100):0;
-      const expPct=s.exprimes&&vot?(s.exprimes/vot*100):0;
+      const exprimes=s.exprimes||(vot-blancs-nuls)||0;
+      const abstPct=ins?(((ins-vot)/ins)*100):0;
+      const partPct=ins?((vot/ins)*100):0;
+      // Dans la participation : exprimés / blancs / nuls
+      const expPct=ins?(exprimes/ins*100):0;
+      const blancPct=ins?(blancs/ins*100):0;
+      const nulPct=ins?(nuls/ins*100):0;
       const tcolor=TYPE_COLORS[s.type];
       const row=document.createElement('div');
-      row.style.marginBottom='22px';
-      const votLabel=partPct>12?'<span style="font-size:10px;color:#fff;font-weight:700;white-space:nowrap">Vot. '+partPct.toFixed(1)+' %</span>':'';
-      const absLabel=abstPct>8?'<span style="font-size:10px;color:var(--muted);font-weight:600;white-space:nowrap">Abs. '+abstPct.toFixed(1)+' %</span>':'';
-      let extra='';
-      if(ins>0){
-        extra='<div style="display:flex;gap:14px;font-family:\'IBM Plex Mono\',monospace;font-size:10px;color:var(--muted);padding-left:4px">'
-          +'<span>Exprimés : <b style="color:var(--text)">'+(s.exprimes?expPct.toFixed(1)+'%':'—')+'</b></span>'
-          +(blancs?'<span>Blancs : <b style="color:var(--text)">'+blancPct.toFixed(1)+'%</b></span>':'')
-          +(nuls?'<span>Nuls : <b style="color:var(--text)">'+nulPct.toFixed(1)+'%</b></span>':'')
-          +'</div>';
-      }
+      row.style.marginBottom='20px';
+
+      // Barre empilée 100% : [exprimés | blancs | nuls | abstention]
+      const seg=(pct,color,opacity,title)=>pct>0.2?`<div style="width:${pct.toFixed(3)}%;background:${color};opacity:${opacity};display:flex;align-items:center;justify-content:center;overflow:hidden;transition:width .7s" title="${title}: ${pct.toFixed(1)}%">${pct>6?`<span style="font-size:9px;color:#fff;font-weight:700;white-space:nowrap">${pct.toFixed(0)}%</span>`:''}</div>`:'';
+
       row.innerHTML=
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">'
           +'<div style="display:flex;align-items:center;gap:8px">'
             +'<span class="type-badge type-'+s.type+'">'+sl(s)+'</span>'
-            +'<span style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;font-weight:700;color:'+tcolor+'">'+partPct.toFixed(2)+' %</span>'
+            +'<span style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;font-weight:700;color:'+tcolor+'">Part. '+partPct.toFixed(1)+' %</span>'
           +'</div>'
           +'<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--muted)">'+fmt(ins)+' inscrits</span>'
         +'</div>'
-        +'<div style="height:18px;background:var(--surface2);border-radius:9px;overflow:hidden;display:flex;margin-bottom:4px">'
-          +'<div style="width:'+partPct.toFixed(2)+'%;background:linear-gradient(to right,var(--accent),#5090d0);display:flex;align-items:center;padding-left:8px;">'+votLabel+'</div>'
-          +'<div style="flex:1;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;">'+absLabel+'</div>'
+        // Barre empilée 100%
+        +'<div style="height:20px;border-radius:10px;overflow:hidden;display:flex;width:100%;background:#e8eaf2;box-shadow:inset 0 1px 3px rgba(0,0,0,.06)">'
+          +seg(expPct,'#2a4fd4',1,'Exprimés')
+          +seg(blancPct,'#7ab0e8',.85,'Blancs')
+          +seg(nulPct,'#a8c8f0',.75,'Nuls')
+          +seg(abstPct,'#c4c8d8',1,'Abstention')
         +'</div>'
-        +extra;
+        // Légende discrète
+        +'<div style="display:flex;gap:12px;margin-top:5px;font-family:\'IBM Plex Mono\',monospace;font-size:10px;color:var(--muted);flex-wrap:wrap">'
+          +(expPct>0?'<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#2a4fd4;margin-right:3px;vertical-align:middle"></span>Exprimés '+expPct.toFixed(1)+'%</span>':'')
+          +(blancPct>0?'<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#7ab0e8;margin-right:3px;vertical-align:middle"></span>Blancs '+blancPct.toFixed(1)+'%</span>':'')
+          +(nulPct>0?'<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#a8c8f0;margin-right:3px;vertical-align:middle"></span>Nuls '+nulPct.toFixed(1)+'%</span>':'')
+          +'<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#c4c8d8;margin-right:3px;vertical-align:middle"></span>Abstention '+abstPct.toFixed(1)+'%</span>'
+        +'</div>';
       wrap.appendChild(row);
     });
     c1body.appendChild(wrap);
@@ -1242,100 +1271,85 @@ function renderTabIndices(){
     }
   }
 
-  // ── RÉPARTITION GLOBALE (tous scrutins) ──
+  // ── RÉPARTITION GLOBALE — vue unique avec filtre (tous types + chaque type) ──
   {
-    // Moyenne pondérée sur tous les scrutins (chaque scrutin contribue également)
-    const globalByPos={};POSITIONS.forEach(p=>globalByPos[p.id]=0);
-    let globalTotal=0;
-    iv.forEach(({s})=>{
-      const exp=s.exprimes||1;
-      (s.listes||[]).forEach(l=>{
-        const n=getNuance(l.etiquette);
-        if(n.pos){globalByPos[n.pos]=(globalByPos[n.pos]||0)+Number(l.voix)/exp*100;}
-      });
-      globalTotal++;
-    });
-    // Moyenne par position
-    const avgByPos={};
-    let avgSum=0;
-    POSITIONS.forEach(p=>{avgByPos[p.id]=globalTotal>0?globalByPos[p.id]/globalTotal:0; avgSum+=avgByPos[p.id];});
-    // Normaliser pour que ça fasse 100%
-    const normFactor=avgSum>0?100/avgSum:1;
-
-    let barSegs='';
-    POSITIONS.forEach(p=>{
-      const pct=avgByPos[p.id]*normFactor;if(pct<0.3)return;
-      barSegs+=`<div style="width:${pct.toFixed(2)}%;background:${p.color};display:flex;align-items:center;justify-content:center;overflow:hidden" title="${p.label} : ${pct.toFixed(2)}%"></div>`;
-    });
-    // Indicateurs discrets 25% / 50% / 75%
-    const markerBar=`<div style="position:relative;margin-top:4px;height:14px">
-      ${[25,50,75].map(m=>`<div style="position:absolute;left:${m}%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:1px">
-        <div style="width:1px;height:6px;background:var(--muted);opacity:.4"></div>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);opacity:.6">${m}%</span>
-      </div>`).join('')}
-    </div>`;
-
-    // Grille d'intitulés complets avec % dessous
-    let legendGrid='';
-    const activePos=POSITIONS.filter(p=>avgByPos[p.id]*normFactor>=0.3);
-    legendGrid=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:18px">`;
-    activePos.forEach(p=>{
-      const pct=(avgByPos[p.id]*normFactor).toFixed(2);
-      legendGrid+=`<div style="background:${p.color}10;border:1px solid ${p.color}28;border-radius:9px;padding:12px 10px;text-align:center">
-        <div style="width:8px;height:8px;border-radius:50%;background:${p.color};margin:0 auto 6px"></div>
-        <div style="font-size:11px;font-weight:700;color:${p.color};line-height:1.3;margin-bottom:5px">${p.label}</div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;color:${p.color}">${pct}%</div>
-      </div>`;
-    });
-    legendGrid+='</div>';
-
     const c3=document.createElement('div');c3.className='card anim anim-d3';
-    c3.innerHTML=`<p class="card-title">Répartition moyenne par position — tous scrutins confondus</p>
-      <div style="position:relative">
-        <div style="display:flex;border-radius:10px;overflow:hidden;height:28px;box-shadow:0 2px 6px rgba(0,0,0,.08)">${barSegs}</div>
-        ${markerBar}
-      </div>
-      ${legendGrid}`;
-    content.appendChild(c3);
+    const c3title=document.createElement('p');c3title.className='card-title';c3title.textContent='Répartition des voix par position politique';
+    c3.appendChild(c3title);
 
-    // ── RÉPARTITION PAR TYPE D'ÉLECTION ──
-    const typesSaisis=[...new Set(iv.map(({s})=>s.type))];
-    if(typesSaisis.length>1){
-      const c3b=document.createElement('div');c3b.className='card anim anim-d3';
-      let typeSections='';
-      ['MUN','LEG','PRE','EUR','REG','DEP'].forEach(type=>{
-        const typeIv=iv.filter(({s})=>s.type===type);if(!typeIv.length)return;
-        const tByPos={};POSITIONS.forEach(p=>tByPos[p.id]=0);let tTotal=0;
-        typeIv.forEach(({s})=>{
-          const exp=s.exprimes||1;
-          (s.listes||[]).forEach(l=>{const n=getNuance(l.etiquette);if(n.pos)tByPos[n.pos]=(tByPos[n.pos]||0)+Number(l.voix)/exp*100;});
-          tTotal++;
+    // Pré-calculer les données pour ALL et par type
+    function calcRepartition(scrutinList){
+      const byPos={};POSITIONS.forEach(p=>byPos[p.id]=0);
+      let total=0;
+      scrutinList.forEach(s=>{
+        const exp=s.exprimes||1;
+        (s.listes||[]).forEach(l=>{
+          const n=getNuance(l.etiquette);
+          if(n.pos){byPos[n.pos]=(byPos[n.pos]||0)+Number(l.voix)/exp*100;}
         });
-        const tAvg={};let tSum=0;
-        POSITIONS.forEach(p=>{tAvg[p.id]=tTotal>0?tByPos[p.id]/tTotal:0;tSum+=tAvg[p.id];});
-        const tNorm=tSum>0?100/tSum:1;
-        let tBar='';
-        POSITIONS.forEach(p=>{const pct=tAvg[p.id]*tNorm;if(pct<0.3)return;tBar+=`<div style="width:${pct.toFixed(2)}%;background:${p.color}" title="${p.label} : ${pct.toFixed(2)}%"></div>`;});
-        let tLegend='';
-        POSITIONS.filter(p=>tAvg[p.id]*tNorm>=0.5).forEach(p=>{
-          const pct=(tAvg[p.id]*tNorm).toFixed(2);
-          tLegend+=`<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:5px;background:${p.color}14;border:1px solid ${p.color}28;font-size:11px;font-weight:600;color:${p.color}"><span style="width:6px;height:6px;border-radius:50%;background:${p.color};flex-shrink:0"></span>${p.label} <span style="font-family:'IBM Plex Mono',monospace;opacity:.7">${pct}%</span></span>`;
-        });
-        typeSections+=`
-          <div style="margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border)">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-              <span class="type-badge type-${type}">${TYPE_LABELS[type]}</span>
-              <span style="font-size:11px;color:var(--muted)">${typeIv.length} scrutin${typeIv.length>1?'s':''}</span>
-            </div>
-            <div style="display:flex;border-radius:8px;overflow:hidden;height:20px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06)">${tBar}</div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px">${tLegend}</div>
-          </div>`;
+        total++;
       });
-      // Supprimer le dernier border-bottom
-      typeSections=typeSections.trimEnd().replace(/border-bottom:1px solid var\(--border\)(?=[^"]*">[^<]*<\/div>\s*$)/,'border-bottom:none');
-      c3b.innerHTML=`<p class="card-title">Répartition par position — par type d'élection</p>${typeSections}`;
-      content.appendChild(c3b);
+      const avg={};let sum=0;
+      POSITIONS.forEach(p=>{avg[p.id]=total>0?byPos[p.id]/total:0;sum+=avg[p.id];});
+      const norm=sum>0?100/sum:1;
+      return {avg,norm};
     }
+
+    const repart={ALL:calcRepartition(iv.map(({s})=>s))};
+    const availTypesR=[...new Set(iv.map(({s})=>s.type))];
+    availTypesR.forEach(t=>{
+      repart[t]=calcRepartition(iv.filter(({s})=>s.type===t).map(({s})=>s));
+    });
+
+    // Barre de filtre
+    const filterWrap=document.createElement('div');filterWrap.className='type-filter-bar';filterWrap.dataset.active='ALL';
+    const buildFilterR=()=>{
+      filterWrap.innerHTML='';
+      [['ALL','Toutes'],...availTypesR.map(t=>[t,TYPE_LABELS[t]])].forEach(([id,label])=>{
+        const btn=document.createElement('button');
+        btn.className=`type-filter-btn${id!=='ALL'?' tf-'+id:''}${filterWrap.dataset.active===id?' active':''}`;
+        btn.textContent=label;
+        btn.onclick=()=>{filterWrap.dataset.active=id;buildFilterR();renderRepartition(id);};
+        filterWrap.appendChild(btn);
+      });
+    };
+
+    const barRow=document.createElement('div');barRow.style.cssText='position:relative;margin:14px 0 4px';
+    const barInner=document.createElement('div');barInner.style.cssText='display:flex;border-radius:10px;overflow:hidden;height:28px;box-shadow:0 2px 6px rgba(0,0,0,.08)';
+    barRow.appendChild(barInner);
+    // markers 25/50/75
+    barRow.insertAdjacentHTML('beforeend',`<div style="position:relative;margin-top:4px;height:14px">${[25,50,75].map(m=>`<div style="position:absolute;left:${m}%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:1px"><div style="width:1px;height:6px;background:var(--muted);opacity:.4"></div><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);opacity:.6">${m}%</span></div>`).join('')}</div>`);
+    const legendGrid=document.createElement('div');legendGrid.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:18px';
+
+    function renderRepartition(filterType){
+      const {avg,norm}=repart[filterType]||repart['ALL'];
+      // Animate bars
+      barInner.innerHTML='';
+      POSITIONS.forEach(p=>{
+        const pct=avg[p.id]*norm;if(pct<0.3)return;
+        const seg=document.createElement('div');
+        seg.style.cssText=`width:0%;background:${p.color};display:flex;align-items:center;justify-content:center;overflow:hidden;transition:width .55s cubic-bezier(.22,.68,0,1.1)`;
+        seg.title=`${p.label} : ${pct.toFixed(2)}%`;
+        barInner.appendChild(seg);
+        requestAnimationFrame(()=>requestAnimationFrame(()=>{seg.style.width=pct.toFixed(3)+'%';}));
+      });
+      // Legend
+      legendGrid.innerHTML='';
+      POSITIONS.filter(p=>avg[p.id]*norm>=0.3).forEach(p=>{
+        const pct=(avg[p.id]*norm).toFixed(2);
+        const cell=document.createElement('div');
+        cell.style.cssText=`background:${p.color}10;border:1px solid ${p.color}28;border-radius:9px;padding:12px 10px;text-align:center;transition:all .4s`;
+        cell.innerHTML=`<div style="width:8px;height:8px;border-radius:50%;background:${p.color};margin:0 auto 6px"></div><div style="font-size:11px;font-weight:700;color:${p.color};line-height:1.3;margin-bottom:5px">${p.label}</div><div style="font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;color:${p.color}">${pct}%</div>`;
+        legendGrid.appendChild(cell);
+      });
+    }
+
+    c3.appendChild(filterWrap);
+    c3.appendChild(barRow);
+    c3.appendChild(legendGrid);
+    buildFilterR();
+    renderRepartition('ALL');
+    content.appendChild(c3);
   }
 
   // Tableau évolution
@@ -1861,6 +1875,147 @@ async function init(){
   renderSidebar();
   showPublicHome();
 }
+function pubHeaderSearchHandler(val){
+  const el=document.getElementById('pubHeaderSuggest');if(!el)return;
+  const v=val.trim().toLowerCase();
+  if(!v){el.innerHTML='';el.style.display='none';return;}
+  const results=state.communes.filter(c=>
+    c.nom.toLowerCase().includes(v)||(c.insee&&c.insee.startsWith(v))
+  ).slice().sort((a,b)=>a.nom.localeCompare(b.nom,'fr')).slice(0,8);
+  if(!results.length){el.innerHTML='<div style="padding:10px 14px;font-size:12px;color:var(--muted)">Aucun résultat</div>';el.style.display='block';return;}
+  el.innerHTML=results.map(comm=>{
+    const ci=state.communes.indexOf(comm);
+    const iv=comm.scrutins.map(s=>calcIndice(s)).filter(x=>x!==null);
+    const idx=iv.length?parseFloat((iv.reduce((a,b)=>a+b,0)/iv.length).toFixed(2)):null;
+    const d=getPos(idx);
+    return `<div onclick="selectCommune(${ci});renderMain();document.getElementById('pubHeaderSearch').value='';document.getElementById('pubHeaderSuggest').style.display='none';"
+      style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background .1s;border-bottom:1px solid var(--border)"
+      onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+      <div style="width:9px;height:9px;border-radius:50%;background:${d.color};flex-shrink:0"></div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700">${comm.nom}</div>
+        <div style="font-size:11px;color:var(--muted)">${comm.dept||''}</div>
+      </div>
+      ${idx!==null?`<span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;color:${d.color}">${idx>=0?'+':''}${idx}</span>`:''}
+    </div>`;
+  }).join('');
+  el.style.display='block';
+}
+
+function showMethodoPage(){
+  setNavActive('pubNavMethodo');
+  const main=document.getElementById('mainContent');
+  main.innerHTML=`
+  <div class="anim" style="max-width:820px;margin:0 auto">
+    <h1 style="font-size:22px;font-weight:800;margin-bottom:6px">Détails & Méthodologie</h1>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:32px">Comment fonctionne le Politomètre, ce qu'il mesure et comment interpréter les résultats.</p>
+
+    <div class="card anim anim-d1" style="margin-bottom:18px">
+      <p class="card-title">Qu'est-ce que le Politomètre ?</p>
+      <p style="font-size:14px;line-height:1.7;color:var(--muted2)">Le Politomètre est un outil de suivi et d'analyse de la vie politique locale. Il permet de visualiser, pour chaque commune renseignée, les résultats électoraux détaillés, la participation, l'évolution de la couleur politique dans le temps, et de comparer des communes entre elles.</p>
+      <p style="font-size:14px;line-height:1.7;color:var(--muted2);margin-top:12px">Les données sont saisies manuellement pour chaque scrutin et ne proviennent pas d'une source automatisée. Les résultats affichés reflètent uniquement ce qui a été renseigné dans l'application.</p>
+    </div>
+
+    <div class="card anim anim-d2" style="margin-bottom:18px">
+      <p class="card-title">L'indice politique</p>
+      <p style="font-size:14px;line-height:1.7;color:var(--muted2)">L'indice est un score numérique compris entre <b style="color:#cc0000">−1,00 (extrême gauche)</b> et <b style="color:#0a1040">+1,00 (extrême droite)</b>. Il est calculé pour chaque scrutin à partir de la moyenne pondérée des voix obtenues par chaque candidat ou liste, pondérée par la position politique de l'étiquette associée.</p>
+      <div style="margin:18px 0;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px">Positions et scores associés</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px">
+          ${POSITIONS.map(p=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface);border:1px solid ${p.color}30;border-radius:8px">
+            <div style="width:10px;height:10px;border-radius:50%;background:${p.color};flex-shrink:0"></div>
+            <div><div style="font-size:12px;font-weight:700;color:${p.color}">${p.label}</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)">${p.score>=0?'+':''}${p.score.toFixed(2)}</div></div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <p style="font-size:13px;line-height:1.6;color:var(--muted);font-style:italic">L'indice global d'une commune correspond à la moyenne arithmétique des indices calculés sur l'ensemble des scrutins renseignés pour cette commune.</p>
+    </div>
+
+    <div class="card anim anim-d2" style="margin-bottom:18px">
+      <p class="card-title">Les étiquettes politiques (nuances)</p>
+      <p style="font-size:14px;line-height:1.7;color:var(--muted2);margin-bottom:14px">Chaque candidat ou liste est associé à une étiquette politique (nuance), inspirée du système de nuances du Ministère de l'Intérieur français. Ces étiquettes sont regroupées en positions sur le spectre politique.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px;max-height:320px;overflow-y:auto">
+        ${NUANCES.map(n=>{const pos=n.pos?POSITIONS.find(p=>p.id===n.pos):null;return `<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid var(--border);border-radius:7px;background:var(--surface2)">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;color:${n.color};background:${n.color}15;padding:2px 6px;border-radius:4px;min-width:52px;text-align:center">${n.code}</span>
+          <div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${n.label}</div>
+          ${pos?`<div style="font-size:10px;color:${pos.color};font-weight:700">→ ${pos.label}</div>`:''}</div>
+        </div>`;}).join('')}
+      </div>
+    </div>
+
+    <div class="card anim anim-d3" style="margin-bottom:18px">
+      <p class="card-title">La participation & l'abstention</p>
+      <p style="font-size:14px;line-height:1.7;color:var(--muted2)">Le taux de participation est calculé comme le rapport entre le nombre de votants et le nombre d'inscrits sur les listes électorales. Les données de participation affichées comprennent :</p>
+      <ul style="margin:14px 0 0 18px;display:flex;flex-direction:column;gap:8px">
+        <li style="font-size:13px;color:var(--muted2);line-height:1.5"><b>Inscrits :</b> nombre total d'électeurs inscrits sur les listes.</li>
+        <li style="font-size:13px;color:var(--muted2);line-height:1.5"><b>Votants :</b> nombre d'électeurs s'étant déplacés aux urnes (exprimés + blancs + nuls).</li>
+        <li style="font-size:13px;color:var(--muted2);line-height:1.5"><b>Exprimés :</b> votants déduction faite des bulletins blancs et nuls.</li>
+        <li style="font-size:13px;color:var(--muted2);line-height:1.5"><b>Abstention :</b> inscrits n'ayant pas voté (= Inscrits − Votants).</li>
+      </ul>
+      <p style="font-size:13px;color:var(--muted);font-style:italic;margin-top:14px">Les graphiques de participation affichent des barres empilées : participation totale (bleu), avec subdivision en exprimés (bleu foncé), blancs et nuls (bleu clair), et abstention (gris).</p>
+    </div>
+
+    <div class="card anim anim-d3" style="margin-bottom:18px">
+      <p class="card-title">L'indice d'évolution (tendance)</p>
+      <p style="font-size:14px;line-height:1.7;color:var(--muted2)">L'indice d'évolution est calculé par régression linéaire sur l'ensemble des scrutins renseignés (axe X = année du scrutin, axe Y = indice politique). Il représente la variation moyenne de l'indice par année.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px">
+        <div style="background:#fff0f0;border:1px solid #e0b0b0;border-radius:10px;padding:14px;text-align:center">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:#e75555">◀ négatif</div>
+          <div style="font-size:12px;color:#c03030;margin-top:6px;font-weight:600">Tendance vers la gauche</div>
+        </div>
+        <div style="background:#fffff0;border:1px solid #d0c080;border-radius:10px;padding:14px;text-align:center">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:#c8a000">≈ 0</div>
+          <div style="font-size:12px;color:#a08000;margin-top:6px;font-weight:600">Tendance stable</div>
+        </div>
+        <div style="background:#f0f0ff;border:1px solid #b0b0e0;border-radius:10px;padding:14px;text-align:center">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:#2a7bd4">▶ positif</div>
+          <div style="font-size:12px;color:#1a5ab0;margin-top:6px;font-weight:600">Tendance vers la droite</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card anim anim-d4" style="margin-bottom:18px">
+      <p class="card-title">Ce qui est présenté par onglet</p>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="border-left:3px solid var(--accent);padding-left:14px">
+          <div style="font-size:13px;font-weight:800;margin-bottom:4px">Résultats</div>
+          <div style="font-size:13px;color:var(--muted2);line-height:1.6">Les résultats détaillés de chaque scrutin renseigné : liste des candidats avec étiquette, score et voix, données de participation, indice calculé. Filtrable par type d'élection.</div>
+        </div>
+        <div style="border-left:3px solid var(--accent);padding-left:14px">
+          <div style="font-size:13px;font-weight:800;margin-bottom:4px">Participation</div>
+          <div style="font-size:13px;color:var(--muted2);line-height:1.6">Vue globale de la participation et de l'abstention sur tous les scrutins renseignés. Barres empilées par scrutin, graphique d'évolution, tableau récapitulatif et stats par type d'élection.</div>
+        </div>
+        <div style="border-left:3px solid var(--accent);padding-left:14px">
+          <div style="font-size:13px;font-weight:800;margin-bottom:4px">Indices & Évolution</div>
+          <div style="font-size:13px;color:var(--muted2);line-height:1.6">Positionnement de chaque scrutin sur le spectre politique, indice global, tendance de régression linéaire, répartition moyenne des voix par position politique (filtrée par type d'élection), tableau d'évolution scrutin par scrutin.</div>
+        </div>
+        <div style="border-left:3px solid var(--accent);padding-left:14px">
+          <div style="font-size:13px;font-weight:800;margin-bottom:4px">Élus</div>
+          <div style="font-size:13px;color:var(--muted2);line-height:1.6">Frise chronologique des élus par type d'élection (maire, députés, conseillers…). Les élus sont marqués manuellement depuis l'onglet Résultats.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card anim anim-d4" style="margin-bottom:18px">
+      <p class="card-title">Limites et avertissements</p>
+      <div style="background:#fff8e6;border:1px solid #e0c88a;border-radius:10px;padding:16px;font-size:13px;color:#7a5a10;line-height:1.7">
+        <b>Attention :</b> L'indice politique est une simplification par nature. Il ne permet pas de capturer toute la complexité d'un paysage politique local. Les étiquettes politiques sont attribuées manuellement et peuvent comporter des inexactitudes. Les comparaisons entre communes de tailles très différentes doivent être interprétées avec prudence. L'indice ne tient pas compte du contexte local, des alliances, ni des dynamiques de second tour.
+      </div>
+    </div>
+
+    <div class="card anim anim-d5">
+      <p class="card-title">Types d'élections suivis</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">
+        ${Object.entries(TYPE_LABELS).map(([k,v])=>`<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+          <span class="type-badge type-${k}">${k}</span>
+          <span style="font-size:13px;font-weight:600">${v}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
 function setNavActive(id){
   document.querySelectorAll('.pub-nav-btn').forEach(b=>b.classList.remove('active'));
   const el=document.getElementById(id);if(el)el.classList.add('active');
@@ -2329,6 +2484,7 @@ function applyCreateur(){
 let mapInstance=null;
 let mapLayer=null;
 let mapMode='indice'; // 'indice' | 'evol'
+let mapScrutinFilter='ALL';
 let compareMode=false;
 let compareA=null,compareB=null;
 
@@ -2349,6 +2505,14 @@ function showCarteView(){
         <div style="display:flex;gap:4px">
           <button id="mapModeIndice" class="type-filter-btn active" onclick="setMapMode('indice')">Indice moyen</button>
           <button id="mapModeEvol" class="type-filter-btn" onclick="setMapMode('evol')">Tendance</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Scrutin :</span>
+          <select id="mapScrutinFilter" onchange="setMapScrutinFilter(this.value)"
+            style="padding:5px 10px;border-radius:7px;border:1.5px solid var(--border);font-family:'Outfit',sans-serif;font-size:12px;background:var(--surface);color:var(--text);cursor:pointer;transition:border-color .15s"
+            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+            <option value="ALL">Tous scrutins</option>
+          </select>
         </div>
         <div style="display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap">
           <div style="position:relative">
@@ -2374,9 +2538,35 @@ function showCarteView(){
       <div id="mapInfoPanel" style="display:none;position:absolute;top:14px;right:14px;width:300px;background:rgba(255,255,255,.97);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--shadow-lg);z-index:600;backdrop-filter:blur(10px);max-height:calc(100% - 28px);overflow-y:auto"></div>
     </div>`;
   
-  setTimeout(()=>initMap(),80);
+  setTimeout(()=>{initMap();buildMapScrutinSelect();},80);
 }
 
+function setMapScrutinFilter(val){
+  mapScrutinFilter=val;
+  updateMapMarkers();
+}
+function buildMapScrutinSelect(){
+  const sel=document.getElementById('mapScrutinFilter');if(!sel)return;
+  // Collecter tous les scrutins uniques
+  const seen=new Set();const opts=['<option value="ALL">Tous scrutins</option>'];
+  const TYPE_ORD={MUN:0,DEP:1,REG:2,PRE:3,LEG:4,EUR:5};
+  const allSc=[];
+  state.communes.forEach(c=>(c.scrutins||[]).forEach(s=>{
+    const key=s.type+'-'+s.annee+'-'+s.tour;
+    if(!seen.has(key)){seen.add(key);allSc.push(s);}
+  }));
+  allSc.sort((a,b)=>{
+    if(a.annee!==b.annee)return a.annee-b.annee;
+    const td=(TYPE_ORD[a.type]??9)-(TYPE_ORD[b.type]??9);
+    return td!==0?td:(a.tour==='1'?-1:a.tour==='U'?0:1);
+  });
+  allSc.forEach(s=>{
+    const key=s.type+'-'+s.annee+'-'+s.tour;
+    opts.push(`<option value="${key}">${sl(s)}</option>`);
+  });
+  sel.innerHTML=opts.join('');
+  sel.value=mapScrutinFilter;
+}
 function setMapMode(mode){
   mapMode=mode;
   document.getElementById('mapModeIndice').classList.toggle('active',mode==='indice');
@@ -2569,21 +2759,29 @@ function updateMapMarkers(){
 
   withCoords.forEach((c,_)=>{
     const ci=state.communes.indexOf(c);
-    const scrutins=c.scrutins||[];
+    let scrutins=c.scrutins||[];
+    // Filtre par scrutin précis
+    if(mapScrutinFilter!=='ALL'){
+      const [ftype,fannee,ftour]=mapScrutinFilter.split('-');
+      scrutins=scrutins.filter(s=>s.type===ftype&&String(s.annee)===fannee&&s.tour===ftour);
+    }
     const iv=scrutins.map(s=>calcIndice(s)).filter(x=>x!==null);
     const indice=iv.length?parseFloat((iv.reduce((a,b)=>a+b,0)/iv.length).toFixed(3)):null;
     const evol=calcEvol(scrutins);
     const desc=getPos(indice);
-    let markerColor=indice!==null?desc.color:'#aab0c0';
-    if(mapMode==='evol'){
+    // Griser si le scrutin filtré n'existe pas pour cette commune
+    const noData=mapScrutinFilter!=='ALL'&&scrutins.length===0;
+    let markerColor=noData?'#c0c4d0':(indice!==null?desc.color:'#aab0c0');
+    if(!noData&&mapMode==='evol'){
       markerColor=evol===null?'#aab0c0':evol>0.01?'#2a7bd4':evol<-0.01?'#e75555':'#c8a000';
     }
     const radius=c.population?Math.max(9,Math.min(24,Math.sqrt(c.population/80))):13;
+    const scrutinLabel=mapScrutinFilter!=='ALL'?(scrutins[0]?sl(scrutins[0]):'Non renseigné'):'Tous scrutins';
     const marker=L.circleMarker(c._latLng,{
-      radius,color:'#fff',weight:2.5,fillColor:markerColor,fillOpacity:0.88,
+      radius,color:'#fff',weight:2.5,fillColor:markerColor,fillOpacity:noData?0.45:0.88,
     });
     const val=mapMode==='indice'?(indice!==null?(indice>=0?'+':'')+indice:'—'):(evol!==null?(evol>=0?'+':'')+evol.toFixed(4):'—');
-    marker.bindTooltip(`<b style="font-size:12px">${c.nom}</b><br><span style="font-family:monospace;font-size:11px">${mapMode==='indice'?'Indice':'Tendance'} : ${val}</span>`,{
+    marker.bindTooltip(`<b style="font-size:12px">${c.nom}</b><br><span style="font-family:monospace;font-size:10px;color:#888">${scrutinLabel}</span><br><span style="font-family:monospace;font-size:11px">${noData?'Pas de données':(mapMode==='indice'?'Indice':'Tendance')+' : '+val}</span>`,{
       permanent:false,direction:'top',className:'leaflet-tooltip'
     });
     marker.on('click',()=>{
@@ -3053,8 +3251,10 @@ function showPublicComparateur(){
 
 init();
 </script>
+
 <footer style="background:#fff;border-top:1px solid var(--border);padding:10px 28px;text-align:center;font-size:11px;color:var(--muted);letter-spacing:.04em">
   Politomètre · © Rémi T. · 2026
 </footer>
+
 </body>
 </html>
