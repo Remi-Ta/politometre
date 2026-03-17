@@ -3051,9 +3051,14 @@ function showComparateur(nomA, nomB){
 
   // ── Données pour graphiques ────────────────────────
   // Scrutins communs (même type+annee) pour comparaison directe
+  const TYPE_ORDER_CMP={MUN:0,DEP:1,REG:2,PRE:3,LEG:4,EUR:5};
   const commonKeys=[...new Set(scA.filter(isScrutinFilled).map(s=>s.type+'|'+s.annee))]
     .filter(k=>scB.some(s=>isScrutinFilled(s)&&s.type+'|'+s.annee===k))
-    .sort();
+    .sort((a,b)=>{
+      const [ta,aa]=a.split('|'), [tb,ab]=b.split('|');
+      if(aa!==ab)return Number(aa)-Number(ab);
+      return (TYPE_ORDER_CMP[ta]??9)-(TYPE_ORDER_CMP[tb]??9);
+    });
 
   const siA=state.communes.indexOf(ca), siB=state.communes.indexOf(cb);
 
@@ -3174,7 +3179,7 @@ function showComparateur(nomA, nomB){
         type:'line',
         data:{labels,datasets:[
           {label:ca.nom,data:dataA,borderColor:'#2a4fd4',backgroundColor:'#2a4fd418',fill:false,tension:0.35,pointRadius:6,pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:2.5},
-          {label:cb.nom,data:dataB,borderColor:'#6ab0e8',backgroundColor:'#6ab0e818',fill:false,tension:0.35,pointRadius:6,pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:2.5,borderDash:[5,4]},
+          {label:cb.nom,data:dataB,borderColor:'#6ab0e8',backgroundColor:'#6ab0e818',fill:false,tension:0.35,pointRadius:6,pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:2.5},
         ]},
         options:{
           responsive:true,maintainAspectRatio:false,
