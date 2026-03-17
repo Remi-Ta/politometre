@@ -410,8 +410,9 @@ header{
       <svg style="position:absolute;left:11px;width:14px;height:14px;color:var(--muted);pointer-events:none;opacity:.55" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m14 14 3 3"/></svg>
       <input type="text" id="pubHeaderSearch" placeholder="Recherchez votre commune"
         oninput="pubHeaderSearchHandler(this.value)"
-        onfocus="this.style.borderColor='var(--accent)';this.style.boxShadow='0 0 0 3px rgba(42,79,212,.1)';document.getElementById('pubHeaderSuggest').style.display='block'"
+        onfocus="this.style.borderColor='var(--accent)';this.style.boxShadow='0 0 0 3px rgba(42,79,212,.1)'"
         onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none';setTimeout(()=>{const s=document.getElementById('pubHeaderSuggest');if(s)s.style.display='none';},200)"
+        onkeydown="if(event.key==='Escape'){this.value='';document.getElementById('pubHeaderSuggest').style.display='none';this.blur();}"
         style="width:100%;padding:7px 12px 7px 33px;border-radius:20px;border:1.5px solid var(--border);font-family:'Outfit',sans-serif;font-size:12.5px;background:var(--surface2);transition:border-color .15s,box-shadow .15s;outline:none">
       <div id="pubHeaderSuggest" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);z-index:500;max-height:240px;overflow-y:auto"></div>
     </div>
@@ -1074,27 +1075,41 @@ function renderTabParticipation(){
   c1.appendChild(c1body);
   content.appendChild(c1);
 
-  // ── Graphique évolution participation ──
+  // ── Graphique évolution participation (barres empilées 100%) ──
   if(valids.length>=2){
     const c2=document.createElement('div');c2.className='card anim anim-d3';
-    c2.innerHTML=`<p class="card-title">Évolution de la participation</p><canvas id="chartPart" height="200"></canvas>`;
+    c2.innerHTML=`<p class="card-title">Évolution de la participation</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;font-size:11px;align-items:center">
+        <span style="display:flex;align-items:center;gap:5px"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#2a4fd4"></span>Exprimés</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#7ab0e8"></span>Blancs</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#a8c8f0"></span>Nuls</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#c4c8d8"></span>Abstention</span>
+      </div>
+      <div style="position:relative;height:260px"><canvas id="chartPart"></canvas></div>`;
     content.appendChild(c2);
     setTimeout(()=>{
       const labels=valids.map(sl);
-      const partData=valids.map(s=>s.inscrits?parseFloat((s.votants/s.inscrits*100).toFixed(2)):null);
-      const abstData=valids.map(s=>s.inscrits?parseFloat(((s.inscrits-s.votants)/s.inscrits*100).toFixed(2)):null);
+      const expData=valids.map(s=>s.inscrits?parseFloat(((s.exprimes||(s.votants-(s.blancs||0)-(s.nuls||0)))/s.inscrits*100).toFixed(2)):0);
+      const blancData=valids.map(s=>s.inscrits?parseFloat(((s.blancs||0)/s.inscrits*100).toFixed(2)):0);
+      const nulData=valids.map(s=>s.inscrits?parseFloat(((s.nuls||0)/s.inscrits*100).toFixed(2)):0);
+      const abstData=valids.map(s=>s.inscrits?parseFloat(((s.inscrits-s.votants)/s.inscrits*100).toFixed(2)):0);
       new Chart(document.getElementById('chartPart').getContext('2d'),{
-        type:'line',
+        type:'bar',
         data:{labels,datasets:[
-          {label:'Participation',data:partData,borderColor:'#2a4fd4',backgroundColor:'rgba(42,79,212,.08)',fill:true,tension:0.4,pointRadius:6,pointBorderColor:'#fff',pointBorderWidth:2,pointBackgroundColor:partData.map(v=>v>50?'#2a4fd4':'#e07030')},
-          {label:'Abstention',data:abstData,borderColor:'#e07030',backgroundColor:'rgba(224,112,48,.05)',fill:true,tension:0.4,pointRadius:5,borderDash:[4,3],pointBorderColor:'#fff',pointBorderWidth:2},
+          {label:'Exprimés',data:expData,backgroundColor:'#2a4fd4',stack:'s'},
+          {label:'Blancs',data:blancData,backgroundColor:'#7ab0e8',stack:'s'},
+          {label:'Nuls',data:nulData,backgroundColor:'#a8c8f0',stack:'s'},
+          {label:'Abstention',data:abstData,backgroundColor:'#c4c8d8',stack:'s'},
         ]},
         options:{
-          responsive:true,
-          plugins:{legend:{labels:{color:'#7880a0',font:{family:'Outfit',size:12},boxWidth:12}},tooltip:{mode:'index',intersect:false}},
+          responsive:true,maintainAspectRatio:false,
+          plugins:{
+            legend:{display:false},
+            tooltip:{mode:'index',intersect:false,callbacks:{label:ctx=>`${ctx.dataset.label} : ${ctx.parsed.y.toFixed(1)}%`}}
+          },
           scales:{
-            x:{ticks:{color:'#7880a0',font:{family:'IBM Plex Mono',size:11}},grid:{color:'#e8eaf2'}},
-            y:{min:0,max:100,ticks:{color:'#7880a0',font:{family:'IBM Plex Mono',size:10},callback:v=>v+'%'},grid:{color:'#e8eaf2'}}
+            x:{stacked:true,ticks:{color:'#7880a0',font:{family:'IBM Plex Mono',size:10},maxRotation:35},grid:{display:false}},
+            y:{stacked:true,min:0,max:100,ticks:{color:'#7880a0',font:{family:'IBM Plex Mono',size:10},callback:v=>v+'%'},grid:{color:'#e8eaf2'}}
           }
         }
       });
@@ -1881,8 +1896,11 @@ function pubHeaderSearchHandler(val){
   if(!v){el.innerHTML='';el.style.display='none';return;}
   const results=state.communes.filter(c=>
     c.nom.toLowerCase().includes(v)||(c.insee&&c.insee.startsWith(v))
-  ).slice().sort((a,b)=>a.nom.localeCompare(b.nom,'fr')).slice(0,8);
-  if(!results.length){el.innerHTML='<div style="padding:10px 14px;font-size:12px;color:var(--muted)">Aucun résultat</div>';el.style.display='block';return;}
+  ).slice().sort((a,b)=>a.nom.localeCompare(b.nom,'fr')).slice(0,10);
+  if(!results.length){
+    el.innerHTML='<div style="padding:10px 14px;font-size:12px;color:var(--muted)">Aucun résultat</div>';
+    el.style.display='block';return;
+  }
   el.innerHTML=results.map(comm=>{
     const ci=state.communes.indexOf(comm);
     const iv=comm.scrutins.map(s=>calcIndice(s)).filter(x=>x!==null);
@@ -2507,12 +2525,19 @@ function showCarteView(){
           <button id="mapModeEvol" class="type-filter-btn" onclick="setMapMode('evol')">Tendance</button>
         </div>
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-          <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Scrutin :</span>
-          <select id="mapScrutinFilter" onchange="setMapScrutinFilter(this.value)"
-            style="padding:5px 10px;border-radius:7px;border:1.5px solid var(--border);font-family:'Outfit',sans-serif;font-size:12px;background:var(--surface);color:var(--text);cursor:pointer;transition:border-color .15s"
-            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
-            <option value="ALL">Tous scrutins</option>
+          <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Élection :</span>
+          <select id="mapElecType" onchange="updateMapElecFilter()"
+            style="padding:5px 10px;border-radius:7px;border:1.5px solid var(--border);font-family:'Outfit',sans-serif;font-size:12px;background:var(--surface);color:var(--text);cursor:pointer">
+            <option value="ALL">Tous types</option>
           </select>
+          <select id="mapElecAnnee" onchange="updateMapElecFilter()"
+            style="padding:5px 10px;border-radius:7px;border:1.5px solid var(--border);font-family:'Outfit',sans-serif;font-size:12px;background:var(--surface);color:var(--text);cursor:pointer">
+            <option value="ALL">Toutes années</option>
+          </select>
+          <div id="mapTourBtns" style="display:none;gap:4px">
+            <button id="mapTourT1" class="type-filter-btn active" onclick="setMapTour('T1')" style="font-size:11px;padding:4px 10px">1er tour / Unique</button>
+            <button id="mapTourT2" class="type-filter-btn" onclick="setMapTour('T2')" style="font-size:11px;padding:4px 10px">2nd tour / Final</button>
+          </div>
         </div>
         <div style="display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap">
           <div style="position:relative">
@@ -2538,34 +2563,42 @@ function showCarteView(){
       <div id="mapInfoPanel" style="display:none;position:absolute;top:14px;right:14px;width:300px;background:rgba(255,255,255,.97);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--shadow-lg);z-index:600;backdrop-filter:blur(10px);max-height:calc(100% - 28px);overflow-y:auto"></div>
     </div>`;
   
-  setTimeout(()=>{initMap();buildMapScrutinSelect();},80);
+  mapScrutinFilter='ALL';mapElecTour='T1';
+  setTimeout(()=>{initMap();buildMapElecSelects();},80);
 }
 
-function setMapScrutinFilter(val){
-  mapScrutinFilter=val;
+let mapElecTour='T1'; // 'T1' = 1er tour + unique | 'T2' = 2nd tour + unique (résultats finaux)
+
+function setMapScrutinFilter(val){mapScrutinFilter=val;updateMapMarkers();}
+
+function buildMapElecSelects(){
+  const typesSel=document.getElementById('mapElecType');
+  const anneesSel=document.getElementById('mapElecAnnee');
+  if(!typesSel||!anneesSel)return;
+  // Collecter types et années uniques
+  const types=new Set(),annees=new Set();
+  state.communes.forEach(c=>(c.scrutins||[]).forEach(s=>{types.add(s.type);annees.add(s.annee);}));
+  typesSel.innerHTML='<option value="ALL">Tous types</option>'+[...types].sort().map(t=>`<option value="${t}">${TYPE_LABELS[t]||t}</option>`).join('');
+  anneesSel.innerHTML='<option value="ALL">Toutes années</option>'+[...annees].sort((a,b)=>b-a).map(a=>`<option value="${a}">${a}</option>`).join('');
+}
+
+function updateMapElecFilter(){
+  const type=document.getElementById('mapElecType')?.value||'ALL';
+  const annee=document.getElementById('mapElecAnnee')?.value||'ALL';
+  const tourBtns=document.getElementById('mapTourBtns');
+  // Montrer les boutons de tour seulement si une élection spécifique est choisie
+  if(tourBtns){tourBtns.style.display=(type!=='ALL'||annee!=='ALL')?'flex':'none';}
+  // Construire le filtre : type-annee-tour
+  if(type==='ALL'&&annee==='ALL'){mapScrutinFilter='ALL';}
+  else{mapScrutinFilter=`${type}|${annee}|${mapElecTour}`;}
   updateMapMarkers();
 }
-function buildMapScrutinSelect(){
-  const sel=document.getElementById('mapScrutinFilter');if(!sel)return;
-  // Collecter tous les scrutins uniques
-  const seen=new Set();const opts=['<option value="ALL">Tous scrutins</option>'];
-  const TYPE_ORD={MUN:0,DEP:1,REG:2,PRE:3,LEG:4,EUR:5};
-  const allSc=[];
-  state.communes.forEach(c=>(c.scrutins||[]).forEach(s=>{
-    const key=s.type+'-'+s.annee+'-'+s.tour;
-    if(!seen.has(key)){seen.add(key);allSc.push(s);}
-  }));
-  allSc.sort((a,b)=>{
-    if(a.annee!==b.annee)return a.annee-b.annee;
-    const td=(TYPE_ORD[a.type]??9)-(TYPE_ORD[b.type]??9);
-    return td!==0?td:(a.tour==='1'?-1:a.tour==='U'?0:1);
-  });
-  allSc.forEach(s=>{
-    const key=s.type+'-'+s.annee+'-'+s.tour;
-    opts.push(`<option value="${key}">${sl(s)}</option>`);
-  });
-  sel.innerHTML=opts.join('');
-  sel.value=mapScrutinFilter;
+
+function setMapTour(tour){
+  mapElecTour=tour;
+  document.getElementById('mapTourT1')?.classList.toggle('active',tour==='T1');
+  document.getElementById('mapTourT2')?.classList.toggle('active',tour==='T2');
+  updateMapElecFilter();
 }
 function setMapMode(mode){
   mapMode=mode;
@@ -2760,25 +2793,34 @@ function updateMapMarkers(){
   withCoords.forEach((c,_)=>{
     const ci=state.communes.indexOf(c);
     let scrutins=c.scrutins||[];
-    // Filtre par scrutin précis
+    // Filtre type|annee|tour
     if(mapScrutinFilter!=='ALL'){
-      const [ftype,fannee,ftour]=mapScrutinFilter.split('-');
-      scrutins=scrutins.filter(s=>s.type===ftype&&String(s.annee)===fannee&&s.tour===ftour);
+      const [ftype,fannee,ftour]=mapScrutinFilter.split('|');
+      scrutins=scrutins.filter(s=>{
+        if(ftype!=='ALL'&&s.type!==ftype)return false;
+        if(fannee!=='ALL'&&String(s.annee)!==fannee)return false;
+        // T1 = 1er tour + tour unique ; T2 = 2nd tour + tour unique (résultat final)
+        if(ftour==='T1')return s.tour==='1'||s.tour==='U';
+        if(ftour==='T2')return s.tour==='2'||s.tour==='U';
+        return true;
+      });
     }
     const iv=scrutins.map(s=>calcIndice(s)).filter(x=>x!==null);
     const indice=iv.length?parseFloat((iv.reduce((a,b)=>a+b,0)/iv.length).toFixed(3)):null;
     const evol=calcEvol(scrutins);
     const desc=getPos(indice);
-    // Griser si le scrutin filtré n'existe pas pour cette commune
     const noData=mapScrutinFilter!=='ALL'&&scrutins.length===0;
     let markerColor=noData?'#c0c4d0':(indice!==null?desc.color:'#aab0c0');
     if(!noData&&mapMode==='evol'){
       markerColor=evol===null?'#aab0c0':evol>0.01?'#2a7bd4':evol<-0.01?'#e75555':'#c8a000';
     }
     const radius=c.population?Math.max(9,Math.min(24,Math.sqrt(c.population/80))):13;
-    const scrutinLabel=mapScrutinFilter!=='ALL'?(scrutins[0]?sl(scrutins[0]):'Non renseigné'):'Tous scrutins';
+    const filterParts=mapScrutinFilter!=='ALL'?mapScrutinFilter.split('|'):null;
+    const scrutinLabel=filterParts
+      ?`${filterParts[0]!=='ALL'?(TYPE_LABELS[filterParts[0]]||filterParts[0]):'Tous types'} ${filterParts[1]!=='ALL'?filterParts[1]:''} ${filterParts[2]==='T1'?'(1er tour/Unique)':filterParts[2]==='T2'?'(Final/2nd tour)':''}`.trim()
+      :'Tous scrutins';
     const marker=L.circleMarker(c._latLng,{
-      radius,color:'#fff',weight:2.5,fillColor:markerColor,fillOpacity:noData?0.45:0.88,
+      radius,color:'#fff',weight:2.5,fillColor:markerColor,fillOpacity:noData?0.4:0.88,
     });
     const val=mapMode==='indice'?(indice!==null?(indice>=0?'+':'')+indice:'—'):(evol!==null?(evol>=0?'+':'')+evol.toFixed(4):'—');
     marker.bindTooltip(`<b style="font-size:12px">${c.nom}</b><br><span style="font-family:monospace;font-size:10px;color:#888">${scrutinLabel}</span><br><span style="font-family:monospace;font-size:11px">${noData?'Pas de données':(mapMode==='indice'?'Indice':'Tendance')+' : '+val}</span>`,{
@@ -2907,6 +2949,7 @@ function exportData(){saveToFile();}
 // COMPARATEUR APPROFONDI
 // ═══════════════════════════════════════════════════════
 function showComparateur(nomA, nomB){
+  setNavActive('pubNavCompare');
   const main=document.getElementById('mainContent');
   const ca=state.communes.find(c=>c.nom===nomA);
   const cb=state.communes.find(c=>c.nom===nomB);
@@ -3000,30 +3043,38 @@ function showComparateur(nomA, nomB){
     </div>`;
   });
 
+  // ── Données pour graphiques ────────────────────────
+  // Scrutins communs (même type+annee) pour comparaison directe
+  const commonKeys=[...new Set(scA.filter(isScrutinFilled).map(s=>s.type+'|'+s.annee))]
+    .filter(k=>scB.some(s=>isScrutinFilled(s)&&s.type+'|'+s.annee===k))
+    .sort();
+
   const siA=state.communes.indexOf(ca), siB=state.communes.indexOf(cb);
 
   main.innerHTML=`
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px" class="anim">
-      <button class="btn btn-ghost btn-sm" onclick="showCarteView()">← Carte</button>
+      <button class="btn btn-ghost btn-sm" onclick="showPublicComparateur()">← Retour</button>
       <h1 style="font-size:20px;font-weight:800;flex:1">Comparateur de communes</h1>
     </div>
 
     <!-- En-têtes communes -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px" class="anim anim-d1">
       <div class="card" style="text-align:center;padding:20px 24px">
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:8px">Commune A</div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:8px">Commune A</div>
         <div style="font-size:22px;font-weight:800;margin-bottom:4px">${ca.nom}</div>
         <div style="font-size:12px;color:var(--muted)">${ca.dept||''} ${ca.population?'· '+fmt(ca.population)+' hab.':''}</div>
         <div style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;color:${dA.color};margin-top:12px">${iA!==null?(iA>=0?'+':'')+iA:'—'}</div>
         <div style="font-size:13px;font-weight:700;color:${dA.color}">${dA.label}</div>
+        <div style="font-size:12px;color:${evolColorA};margin-top:6px">${eA!==null?'Tendance '+(eA>=0?'→ droite':'→ gauche'):'—'}</div>
         <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="selectCommune(${siA});renderMain()">Voir la fiche →</button>
       </div>
       <div class="card" style="text-align:center;padding:20px 24px">
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:8px">Commune B</div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:8px">Commune B</div>
         <div style="font-size:22px;font-weight:800;margin-bottom:4px">${cb.nom}</div>
         <div style="font-size:12px;color:var(--muted)">${cb.dept||''} ${cb.population?'· '+fmt(cb.population)+' hab.':''}</div>
         <div style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;color:${dB.color};margin-top:12px">${iB!==null?(iB>=0?'+':'')+iB:'—'}</div>
         <div style="font-size:13px;font-weight:700;color:${dB.color}">${dB.label}</div>
+        <div style="font-size:12px;color:${evolColorB};margin-top:6px">${eB!==null?'Tendance '+(eB>=0?'→ droite':'→ gauche'):'—'}</div>
         <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="selectCommune(${siB});renderMain()">Voir la fiche →</button>
       </div>
     </div>
@@ -3031,41 +3082,29 @@ function showComparateur(nomA, nomB){
     <!-- Synthèse globale -->
     <div class="card anim anim-d2" style="margin-bottom:16px">
       <p class="card-title">Synthèse globale</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px">
-        <div style="text-align:center;padding:12px;background:var(--surface2);border-radius:12px">
-          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">Indice moyen</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:${dA.color}">${iA!==null?(iA>=0?'+':'')+iA:'—'}</div>
-          <div style="font-size:11px;color:${dA.color}">${ca.nom}</div>
-        </div>
-        <div style="text-align:center;padding:12px;background:var(--surface2);border-radius:12px">
-          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">Indice moyen</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:${dB.color}">${iB!==null?(iB>=0?'+':'')+iB:'—'}</div>
-          <div style="font-size:11px;color:${dB.color}">${cb.nom}</div>
-        </div>
-        <div style="text-align:center;padding:12px;background:var(--surface2);border-radius:12px">
-          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">Tendance</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:700;color:${evolColorA}">${eA!==null?(eA>=0?'+':'')+eA.toFixed(4):'—'}</div>
-          <div style="font-size:11px;color:${evolColorA}">${ca.nom}</div>
-        </div>
-        <div style="text-align:center;padding:12px;background:var(--surface2);border-radius:12px">
-          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">Tendance</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:700;color:${evolColorB}">${eB!==null?(eB>=0?'+':'')+eB.toFixed(4):'—'}</div>
-          <div style="font-size:11px;color:${evolColorB}">${cb.nom}</div>
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
-        <div style="text-align:center;padding:12px;background:var(--surface2);border-radius:12px">
-          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">Participation moyenne</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:700;color:var(--accent)">${pA?pA.toFixed(2)+'%':'—'}</div>
-          <div style="font-size:11px;color:var(--muted)">${ca.nom}</div>
-        </div>
-        <div style="text-align:center;padding:12px;background:var(--surface2);border-radius:12px">
-          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px">Participation moyenne</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:700;color:var(--accent)">${pB?pB.toFixed(2)+'%':'—'}</div>
-          <div style="font-size:11px;color:var(--muted)">${cb.nom}</div>
-        </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+        ${[
+          {label:'Indice moyen',vA:iA!==null?(iA>=0?'+':'')+iA:'—',vB:iB!==null?(iB>=0?'+':'')+iB:'—',cA:dA.color,cB:dB.color},
+          {label:'Tendance',vA:eA!==null?(eA>=0?'+':'')+eA.toFixed(4):'—',vB:eB!==null?(eB>=0?'+':'')+eB.toFixed(4):'—',cA:evolColorA,cB:evolColorB},
+          {label:'Participation moy.',vA:pA?pA.toFixed(1)+'%':'—',vB:pB?pB.toFixed(1)+'%':'—',cA:'var(--accent)',cB:'var(--muted2)'},
+          {label:'Scrutins',vA:getFilledCount(scA),vB:getFilledCount(scB),cA:'var(--accent)',cB:'var(--muted2)'},
+        ].map(r=>`
+          <div style="background:var(--surface2);border-radius:12px;padding:14px;text-align:center">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px">${r.label}</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+              <div><div style="font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:700;color:${r.cA}">${r.vA}</div><div style="font-size:10px;color:var(--accent);margin-top:2px">${ca.nom}</div></div>
+              <div><div style="font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:700;color:${r.cB}">${r.vB}</div><div style="font-size:10px;color:var(--muted2);margin-top:2px">${cb.nom}</div></div>
+            </div>
+          </div>`).join('')}
       </div>
     </div>
+
+    ${commonKeys.length>=2?`
+    <!-- Graphique évolution indice côte à côte -->
+    <div class="card anim anim-d2" style="margin-bottom:16px">
+      <p class="card-title">Évolution de l'indice politique — scrutins communs</p>
+      <div style="position:relative;height:240px"><canvas id="cmpEvolChart"></canvas></div>
+    </div>`:''}
 
     <!-- Par type d'élection -->
     <div class="card anim anim-d3" style="margin-bottom:16px">
@@ -3087,7 +3126,7 @@ function showComparateur(nomA, nomB){
     </div>
 
     <!-- Répartition par position politique -->
-    <div class="card anim anim-d4">
+    <div class="card anim anim-d4" style="margin-bottom:16px">
       <p class="card-title">Répartition des voix par position politique</p>
       <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:0;margin-bottom:14px">
         <div style="text-align:right;font-size:13px;font-weight:700;color:var(--accent);padding-right:10px">${ca.nom}</div>
@@ -3095,7 +3134,86 @@ function showComparateur(nomA, nomB){
         <div style="text-align:left;font-size:13px;font-weight:700;color:var(--muted2);padding-left:10px">${cb.nom}</div>
       </div>
       ${posRows||'<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">Aucune donnée de répartition disponible</div>'}
-    </div>`;
+    </div>
+
+    <!-- Participation côte à côte par scrutin commun -->
+    ${commonKeys.length?`
+    <div class="card anim anim-d4">
+      <p class="card-title">Participation — scrutins comparables</p>
+      <div style="display:flex;gap:10px;margin-bottom:12px;font-size:11px;align-items:center;flex-wrap:wrap">
+        <span style="display:flex;align-items:center;gap:4px"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#2a4fd4;opacity:.85"></span>${ca.nom}</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#8090a0;opacity:.7"></span>${cb.nom}</span>
+      </div>
+      <div style="position:relative;height:220px"><canvas id="cmpPartChart"></canvas></div>
+    </div>`:''}`;
+
+  // ── Graphique évolution indice ─────────────────────────
+  if(commonKeys.length>=2){
+    setTimeout(()=>{
+      const labels=commonKeys.map(k=>{const[t,a]=k.split('|');return (TYPE_LABELS[t]||t)+' '+a;});
+      const dataA=commonKeys.map(k=>{
+        const[t,a]=k.split('|');
+        const sc=scA.filter(s=>s.type===t&&String(s.annee)===a);
+        const v=sc.map(s=>calcIndice(s)).filter(x=>x!==null);
+        return v.length?parseFloat((v.reduce((x,y)=>x+y,0)/v.length).toFixed(3)):null;
+      });
+      const dataB=commonKeys.map(k=>{
+        const[t,a]=k.split('|');
+        const sc=scB.filter(s=>s.type===t&&String(s.annee)===a);
+        const v=sc.map(s=>calcIndice(s)).filter(x=>x!==null);
+        return v.length?parseFloat((v.reduce((x,y)=>x+y,0)/v.length).toFixed(3)):null;
+      });
+      const cvs=document.getElementById('cmpEvolChart');if(!cvs)return;
+      new Chart(cvs.getContext('2d'),{
+        type:'line',
+        data:{labels,datasets:[
+          {label:ca.nom,data:dataA,borderColor:dA.color,backgroundColor:dA.color+'18',fill:false,tension:0.35,pointRadius:6,pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:2.5},
+          {label:cb.nom,data:dataB,borderColor:dB.color,backgroundColor:dB.color+'18',fill:false,tension:0.35,pointRadius:6,pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:2.5,borderDash:[5,4]},
+        ]},
+        options:{
+          responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{labels:{color:'#7880a0',font:{family:'Outfit',size:12},boxWidth:14}},tooltip:{mode:'index',intersect:false}},
+          scales:{
+            x:{ticks:{color:'#7880a0',font:{family:'IBM Plex Mono',size:10},maxRotation:30},grid:{color:'#e8eaf2'}},
+            y:{min:-1,max:1,ticks:{color:'#7880a0',font:{family:'IBM Plex Mono',size:10},stepSize:.25,callback:v=>(v>=0?'+':'')+v.toFixed(2)},grid:{color:(ctx)=>ctx.tick.value===0?'#8090b8':'#e8eaf2',lineWidth:(ctx)=>ctx.tick.value===0?2:1}}
+          }
+        }
+      });
+    },80);
+  }
+
+  // ── Graphique participation comparée ───────────────────
+  if(commonKeys.length){
+    setTimeout(()=>{
+      const labels=commonKeys.map(k=>{const[t,a]=k.split('|');return (TYPE_LABELS[t]||t)+' '+a;});
+      const partA=commonKeys.map(k=>{
+        const[t,a]=k.split('|');
+        const sc=scA.filter(s=>s.type===t&&String(s.annee)===a&&s.inscrits>0);
+        return sc.length?parseFloat((sc.reduce((s,x)=>s+(x.votants/x.inscrits*100),0)/sc.length).toFixed(1)):null;
+      });
+      const partB=commonKeys.map(k=>{
+        const[t,a]=k.split('|');
+        const sc=scB.filter(s=>s.type===t&&String(s.annee)===a&&s.inscrits>0);
+        return sc.length?parseFloat((sc.reduce((s,x)=>s+(x.votants/x.inscrits*100),0)/sc.length).toFixed(1)):null;
+      });
+      const cvs=document.getElementById('cmpPartChart');if(!cvs)return;
+      new Chart(cvs.getContext('2d'),{
+        type:'bar',
+        data:{labels,datasets:[
+          {label:ca.nom,data:partA,backgroundColor:dA.color+'cc',borderRadius:4},
+          {label:cb.nom,data:partB,backgroundColor:'#8090a0aa',borderRadius:4},
+        ]},
+        options:{
+          responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{labels:{color:'#7880a0',font:{family:'Outfit',size:12},boxWidth:12}},tooltip:{mode:'index',intersect:false,callbacks:{label:ctx=>`${ctx.dataset.label} : ${ctx.parsed.y?.toFixed(1)||'—'}%`}}},
+          scales:{
+            x:{ticks:{color:'#7880a0',font:{family:'IBM Plex Mono',size:10},maxRotation:30},grid:{display:false}},
+            y:{min:0,max:100,ticks:{color:'#7880a0',font:{family:'IBM Plex Mono',size:10},callback:v=>v+'%'},grid:{color:'#e8eaf2'}}
+          }
+        }
+      });
+    },120);
+  }
 }
 
 
